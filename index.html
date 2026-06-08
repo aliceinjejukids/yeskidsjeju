@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JejuKids — 제주 양육자를 위한 키즈 친화 장소</title>
+<style>
+  :root {
+    --bg: #FFF9F2;
+    --card: #FFFFFF;
+    --primary: #FF8A3D;
+    --primary-soft: #FFE5D0;
+    --text: #2A2A2A;
+    --text-sub: #6B6B6B;
+    --line: #EFE7DC;
+    --tag-bg: #F4ECE0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 40px; }
+
+  header { padding: 20px 20px 14px; }
+  .logo { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
+  .tagline { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
+  .intro {
+    margin: 12px 20px 16px;
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.5;
+  }
+
+  .tabs-wrap {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+    padding: 10px 0 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 0 20px;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .tab:hover { border-color: var(--primary); }
+  .tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: 600;
+  }
+
+  .sub-filter { padding: 14px 20px 4px; }
+  .sub-filter-label {
+    font-size: 11px; color: var(--text-sub); font-weight: 600;
+    margin-bottom: 6px; letter-spacing: 0.3px;
+  }
+  .chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .chip.active {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+    font-weight: 600;
+  }
+
+  .stats {
+    padding: 14px 20px 10px;
+    font-size: 12.5px;
+    color: var(--text-sub);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .stats b { color: var(--primary); font-weight: 700; font-size: 14px; }
+  .reset {
+    font-size: 12px;
+    color: var(--text-sub);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: underline;
+  }
+
+  .list { padding: 0 20px; }
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    border: 1px solid var(--line);
+  }
+  .card-head {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+    margin-bottom: 4px;
+  }
+  .card-name { font-size: 16px; font-weight: 700; color: var(--text); }
+  .card-cat { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+  .price { font-size: 13px; flex-shrink: 0; }
+  .copy {
+    font-size: 13px; color: var(--text-sub);
+    margin: 10px 0 12px; line-height: 1.5;
+    padding: 10px 12px;
+    background: #FFFBF4;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-soft);
+  }
+  .info-row {
+    display: flex; gap: 8px; font-size: 12px; color: var(--text-sub);
+    margin-bottom: 6px; align-items: flex-start;
+  }
+  .info-row .ico { flex-shrink: 0; }
+  .info-row .val { color: var(--text); }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0 12px; }
+  .tag {
+    font-size: 10.5px;
+    background: var(--tag-bg);
+    color: #6B5840;
+    padding: 3px 7px;
+    border-radius: 6px;
+  }
+  .actions { display: flex; gap: 6px; }
+  .btn {
+    flex: 1;
+    padding: 9px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: white;
+    font-size: 12px;
+    color: var(--text);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: var(--primary); color: var(--primary); }
+  .btn.primary { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+  .btn.primary:hover { color: white; opacity: 0.9; }
+
+  .empty {
+    text-align: center; padding: 60px 20px; color: var(--text-sub); font-size: 14px;
+  }
+  .view-desc {
+    font-size: 12px;
+    color: var(--text-sub);
+    padding: 12px 20px 0;
+    line-height: 1.5;
+  }
+
+  footer {
+    text-align: center; padding: 30px 20px 10px;
+    font-size: 11px; color: var(--text-sub);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">🍊 JejuKids</div>
+    <div class="tagline">제주 양육자를 위한 키즈 친화 장소 가이드</div>
+  </header>
+
+  <div class="intro">
+    오늘 제주에서 아기와 뭐할지 고민하는 양육자를 위한 큐레이션입니다.<br>
+    아래 탭에서 [비오는날], [동물체험] 등 원하는 카테고리를 선택해보세요.
+  </div>
+
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs"></div>
+  </div>
+
+  <div class="view-desc" id="viewDesc"></div>
+
+  <div class="sub-filter">
+    <div class="sub-filter-label">아기 나이</div>
+    <div class="chips" id="ageChips"></div>
+  </div>
+
+  <div class="sub-filter">
+    <div class="sub-filter-label">필요한 시설</div>
+    <div class="chips" id="tagChips"></div>
+  </div>
+
+  <div class="stats">
+    <div><b id="count">0</b>곳을 찾았어요</div>
+    <button class="reset" onclick="resetSubFilters()">필터 초기화</button>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <footer>
+    🍊 JejuKids · 데이터는 Notion으로 관리됩니다<br>
+    응원/제보: alice.in.jejukids@gmail.com
+  </footer>
+</div>
+
+<script>
+let PLACES = [{"이름": "제주융합과학연구원 과학체험관", "IG/Homepage": "https://org.jje.go.kr/cisec/index.jje", "가격대": "FREE", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/xtgMDs5S", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세", "영업시간": "09:30-16:30", "주소": "제주 제주시 산록북로 421-1", "카카오맵URL": "https://place.map.kakao.com/518140268", "카테고리": "박물관/체험관", "키즈태그": "기저귀교환대, 놀이터, 실내놀이, 주차", "한줄카피": "실내 놀이터와 각종 과학체험 프로그램이 있는 곳", "휴무일": "화요일"}, {"이름": "항공우주박물관", "IG/Homepage": "https://www.instagram.com/fly.jam", "가격대": "💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/GaldY2WP", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 서귀포시 안덕면 항공우주로 83", "카카오맵URL": "https://place.map.kakao.com/19585161", "카테고리": "박물관/체험관", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이, 유모차접근, 주차", "한줄카피": "실내 놀이터와 우주 체험을 함께 할 수 있는 공간", "휴무일": "연중무휴"}, {"이름": "카페캄포", "IG/Homepage": "https://www.instagram.com/campo_jejucafe", "가격대": "💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/5Q37BtXv", "상태": "게시중", "시즌이벤트": "여름물놀이", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-22:00", "주소": "제주 제주시 아란서길 170 1층", "카카오맵URL": "https://place.map.kakao.com/299458607", "카테고리": "자연", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이, 실외놀이, 유모차접근, 유아메뉴, 유아의자, 주차", "한줄카피": "제주의 대표 키즈 프렌들리 카페. 실내외 놀이터를 크게 갖추고 있음. 실내 놀이터 입장료 별도", "휴무일": "연중무휴"}, {"이름": "밤비니 오감정원", "IG/Homepage": "https://www.instagram.com/jeju_bambini_ogam", "가격대": "💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/5f5Knu5u", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "2-3세, 4-6세", "영업시간": "10:00-18:00", "주소": "제주특별자치도 제주시 애월읍 광령남7길 1 2층", "카카오맵URL": "https://place.map.kakao.com/2006235093", "카테고리": "클래스", "키즈태그": "실내놀이, 유아의자", "한줄카피": "오감놀이 컨셉의 영유아 전용 공간", "휴무일": "목요일, 수요일, 월요일, 화요일, 확인필요"}, {"이름": "하이파이브", "IG/Homepage": "https://www.instagram.com/hi5ive_jeju/", "가격대": "💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/5yP3GsLl", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "10:00-19:00", "주소": "제주특별자치도 제주시 아연로 112 1층", "카카오맵URL": "https://place.map.kakao.com/1626813663", "카테고리": "클래스", "키즈태그": "놀이터, 실내놀이, 실외놀이, 유아의자, 주차", "한줄카피": "활동적인 놀이 중심 클래스 운영, 월별 테마 다름", "휴무일": "연중무휴"}, {"이름": "애월제주빵집", "IG/Homepage": "https://www.instagram.com/jeju._.bread", "가격대": "💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/Gct7ICeo", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "08:00-20:00", "주소": "제주특별자치도 제주시 애월읍 상가목장길 84", "카카오맵URL": "https://place.map.kakao.com/910476384", "카테고리": "베이커리/카페", "키즈태그": "산책, 유모차접근, 유아의자, 주차", "한줄카피": "애월 인기 베이커리, 빵 종류 다양", "휴무일": "연중무휴"}, {"이름": "스프레무따", "IG/Homepage": "www.instagram.com/spremuta3145", "가격대": "💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/5PVaqKXn", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-19:00", "주소": "제주특별자치도 제주시 산록북로 607", "카카오맵URL": "https://place.map.kakao.com/1059904385", "카테고리": "카페", "키즈태그": "산책, 실외놀이, 주차", "한줄카피": "한라산 중턱 넓은 카페", "휴무일": "연중무휴"}, {"이름": "홀츠 애월", "IG/Homepage": "http://instagram.com/holz.aewol", "가격대": "💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/Fuz5E21p", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "10:30-18:00", "주소": "제주특별자치도 제주시 애월읍 하소로 681-13 나동", "카카오맵URL": "https://place.map.kakao.com/400727195", "카테고리": "카페", "키즈태그": "산책, 실외놀이, 주차", "한줄카피": "숲속 오두막 컨셉의 카페, 바깥에서 아이들 뛰어놀기 좋음", "휴무일": "월요일, 화요일"}, {"이름": "이끼숲소길", "IG/Homepage": "https://www.instagram.com/ikki_cafe", "가격대": "💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/G8s9doVs", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-17:00", "주소": "제주특별자치도 제주시 애월읍 장소로 621 1층", "카카오맵URL": "https://place.map.kakao.com/1965407821", "카테고리": "자연/숲", "키즈태그": "놀이터, 산책, 실외놀이, 주차", "한줄카피": "이끼 낀 신비로운 숲길 산책 (유모차 일부 구간만)", "휴무일": "연중무휴"}, {"이름": "렛츠런파크 제주", "IG/Homepage": "https://www.instagram.com/letsrunpark_official", "가격대": "💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/5jJHvxwE", "상태": "게시중", "시즌이벤트": "여름물놀이", "실내외": "실외", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "확인필요", "주소": "제주특별자치도 제주시 애월읍 평화로 2144", "카카오맵URL": "https://place.map.kakao.com/7952708", "카테고리": "자연/체험", "키즈태그": "놀이터, 동물체험, 실외놀이, 유모차접근, 주차", "한줄카피": "말과 함께하는 가족 공원, 잔디밭 넓음, 방문전 휴무일 반드시 체크 필요", "휴무일": "목요일, 수요일, 월요일, 화요일"}, {"이름": "제주당", "IG/Homepage": "https://www.instagram.com/jejudang_official/", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/5Kb3j2gu", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 4-6세, 7세+", "영업시간": "10:00-21:00", "주소": "제주특별자치도 제주시 애월읍 월각로 927", "카카오맵URL": "https://place.map.kakao.com/808417339", "카테고리": "식당/카페", "키즈태그": "기저귀교환대, 산책, 수유실, 실외놀이, 유모차접근, 유아의자, 주차", "한줄카피": "제주 특산물로 만든 빵이 있는 베이커리, 바깥 정원이 넓고 아르떼키즈파크와 가까움", "휴무일": "연중무휴"}, {"이름": "아르떼키즈파크", "IG/Homepage": "https://www.instagram.com/artekidspark_jeju", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/58N6PtHL", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-19:00", "주소": "제주특별자치도 제주시 애월읍 월각로 929", "카카오맵URL": "https://place.map.kakao.com/1657397874", "카테고리": "키즈카페", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이, 유아메뉴, 유아의자, 주차", "한줄카피": "대형 실내 키즈파크", "휴무일": "연중무휴"}, {"이름": "당동", "IG/Homepage": "https://www.instagram.com/dangdong___", "가격대": "💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/FtTSZNym", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "10:30-18:00", "주소": "제주특별자치도 제주시 애월읍 수산서4길 10-75 1층", "카카오맵URL": "https://place.map.kakao.com/391440082", "카테고리": "카페", "키즈태그": "놀이터, 실외놀이, 유아의자, 주차", "한줄카피": "야외 놀이터를 갖춘 카페", "휴무일": "월요일"}, {"이름": "카페 위유", "IG/Homepage": "https://www.instagram.com/weu_jeju", "가격대": "💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/I55aWwOA", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "08:30-16:00", "주소": "제주특별자치도 제주시 해안마을7가길 5 1층", "카카오맵URL": "https://place.map.kakao.com/205974382", "카테고리": "브런치/레스토랑", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이, 실외놀이, 유모차접근, 유아의자, 주차", "한줄카피": "아기와 함께 가기 좋은 브런치 카페. 실내외 모두 놀이 공간이 있음.", "휴무일": "목요일"}, {"이름": "보롬왓", "IG/Homepage": "https://www.instagram.com/boromwat_", "가격대": "💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/xq3aO1GW", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 서귀포시 표선면 번영로 2350-104", "카카오맵URL": "https://place.map.kakao.com/215604458", "카테고리": "꽃밭/농장", "키즈태그": "산책, 실외놀이, 유모차접근, 주차", "한줄카피": "계절마다 다른 꽃밭, 인생샷 명소", "휴무일": "연중무휴"}, {"이름": "협재해수욕장", "IG/Homepage": "", "가격대": "FREE", "계절": "여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/5XJIlPtO", "상태": "게시중", "시즌이벤트": "여름물놀이", "실내외": "실외", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "상시", "주소": "제주특별자치도 제주시 한림읍 협재리", "카카오맵URL": "https://place.map.kakao.com/8159415", "카테고리": "해변", "키즈태그": "바다, 실외놀이, 주차", "한줄카피": "에메랄드빛 얕은 수심, 비양도 뷰", "휴무일": "연중무휴"}, {"이름": "금능해수욕장", "IG/Homepage": "", "가격대": "FREE", "계절": "여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/Fr7ptPUY", "상태": "게시중", "시즌이벤트": "여름물놀이", "실내외": "실외", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "상시", "주소": "제주특별자치도 제주시 한림읍 금능길 119-10", "카카오맵URL": "https://place.map.kakao.com/13723603", "카테고리": "해변", "키즈태그": "바다, 실외놀이, 주차", "한줄카피": "협재 옆 한적한 가족 해변", "휴무일": "연중무휴"}, {"이름": "미스틱3도", "IG/Homepage": "https://www.instagram.com/mystic3_cafe", "가격대": "💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/5uIYGDge", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 2-3세, 4-6세, 7세+", "영업시간": "08:30-20:00", "주소": "제주특별자치도 제주시 1100로 2894-49 1,2층", "카카오맵URL": "https://place.map.kakao.com/263044374", "카테고리": "카페", "키즈태그": "동물체험, 실외놀이, 주차", "한줄카피": "흙과 나무의 향이 어우러진 감성 카페", "휴무일": "연중무휴"}, {"이름": "킨더플레이", "IG/Homepage": "https://www.instagram.com/starplayfc_kinderplay", "가격대": "💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/GOP9M8cg", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-18:00", "주소": "제주특별자치도 제주시 월산북길 48-24", "카카오맵URL": "https://place.map.kakao.com/1591014944", "카테고리": "키즈카페", "키즈태그": "놀이터, 실내놀이, 실외놀이, 유아메뉴", "한줄카피": "주말에만 여는 깔끔한 키즈카페. 실내외 놀이공간 모두 있음", "휴무일": "금요일, 목요일, 수요일, 월요일, 화요일"}, {"이름": "모넬로키즈카페", "IG/Homepage": "", "가격대": "💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/xTTBgUjh", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "13-24개월, 2-3세, 4-6세", "영업시간": "10:00-20:00", "주소": "제주특별자치도 제주시 월랑로 70 2층", "카카오맵URL": "https://place.map.kakao.com/631880226", "카테고리": "키즈카페", "키즈태그": "놀이터, 실내놀이, 유아의자, 주차", "한줄카피": "외부 음식 반입 가능한 키즈카페, 투썸플레이스 이용 시 보호자 입장료 무료, 평일/주말 영업시간 다름", "휴무일": "연중무휴"}, {"이름": "제주도립미술관(그림책오름)", "IG/Homepage": "https://www.instagram.com/jeju_museum_of_art/", "가격대": "FREE", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/FQVGgXa0", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 1100로 2894-78", "카카오맵URL": "https://place.map.kakao.com/10801589", "카테고리": "미술관", "키즈태그": "놀이터, 산책, 실내놀이, 유모차접근, 주차", "한줄카피": "한라산 자락의 공공 미술관, 정원 산책 가능, 그림책오름 사전 예약 필요", "휴무일": "월요일"}, {"이름": "스마일러펫", "IG/Homepage": "https://www.instagram.com/smiler_jeju", "가격대": "💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/xtgBAB2q", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "11:00-18:00", "주소": "제주특별자치도 제주시 애월읍 상고길 47", "카카오맵URL": "https://place.map.kakao.com/410283209", "카테고리": "카페/동물체험", "키즈태그": "동물체험, 실내놀이", "한줄카피": "애월 동물 체험 카페, 아이가 동물과 교감 (주말/평일 오픈시간 다름)", "휴무일": "수요일"}, {"이름": "바오힐 키즈카페 & 바베큐", "IG/Homepage": "https://www.instagram.com/baohill_", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/5Bcy2NLl", "상태": "게시중", "시즌이벤트": "여름물놀이", "실내외": "혼합", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "10:00-21:00", "주소": "제주특별자치도 제주시 애월읍 광상로 134-2", "카카오맵URL": "https://place.map.kakao.com/824222959", "카테고리": "키즈카페", "키즈태그": "놀이터, 실내놀이, 실외놀이, 주차", "한줄카피": "키즈카페 + 가족 바베큐 결합형", "휴무일": "연중무휴"}, {"이름": "시민복지타운광장", "IG/Homepage": "", "가격대": "FREE", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/xP8FA1tz", "상태": "게시중", "시즌이벤트": "여름물놀이", "실내외": "실외", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "상시", "주소": "제주특별자치도 제주시 도남동", "카카오맵URL": "https://place.map.kakao.com/21843148", "카테고리": "광장/공원", "키즈태그": "놀이터, 산책, 실외놀이, 유모차접근, 주차", "한줄카피": "도심 속 무료 광장, 분수 운영 시 인기", "휴무일": "연중무휴"}, {"이름": "제주특별자치도 소통협력센터(소소소)", "IG/Homepage": "http://www.instagram.com/sotong_jeju", "가격대": "FREE", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/FzSZ6cIj", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "0-12개월, 13-24개월", "영업시간": "10:00-17:00", "주소": "제주특별자치도 제주시 관덕로 44", "카카오맵URL": "https://place.map.kakao.com/1507826558", "카테고리": "육아종합지원", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이, 유모차접근, 주차", "한줄카피": "아기들이 편하게 지낼 수 있는 실내 놀이터, 토요일은 예약 필수 https://jejusotong.kr/space/item.php?it_id=1769564710", "휴무일": "일요일"}, {"이름": "문문선", "IG/Homepage": "https://www.instagram.com/moon.moon.sun", "가격대": "💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/5XJIFGzM", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-17:00", "주소": "제주특별자치도 제주시 오등6길 31 1층", "카카오맵URL": "https://place.map.kakao.com/1498336539", "카테고리": "브런치/레스토랑", "키즈태그": "기저귀교환대, 놀이터, 실외놀이, 유아의자, 주차", "한줄카피": "넓은 잔디밭 브런치 레스토랑, 아이 뛰놀기 좋음", "휴무일": "수요일, 화요일"}, {"이름": "더벅스", "IG/Homepage": "https://instagram.com/thebugs_jeju", "가격대": "💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/GKUgWDa9", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "4-6세, 7세+", "영업시간": "10:00-18:00", "주소": "제주특별자치도 제주시 제주대학로 103-1 지하1층", "카카오맵URL": "https://place.map.kakao.com/2141715392", "카테고리": "카페", "키즈태그": "곤충체험, 실내놀이, 주차", "한줄카피": "곤충체험 가능한 카페", "휴무일": "화요일"}, {"이름": "국립제주박물관", "IG/Homepage": "https://jeju.museum.go.kr/html/kr/index.html", "가격대": "FREE", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/FV7YvUbA", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 일주동로 17", "카카오맵URL": "https://place.map.kakao.com/8192179", "카테고리": "박물관", "키즈태그": "실내놀이, 주차", "한줄카피": "제주 역사·문화 무료 관람, 어린이 박물관 별도", "휴무일": "월요일"}, {"이름": "PLANT827", "IG/Homepage": "https://www.instagram.com/plant827_cafe", "가격대": "💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/FfeOVf7G", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 월평4길 54-25 제1동 1층", "카카오맵URL": "https://place.map.kakao.com/1241494643", "카테고리": "카페/동물체험", "키즈태그": "동물체험, 산책, 실외놀이, 유아의자, 주차", "한줄카피": "큰 정원 속 동물을 만나볼 수 있는 카페", "휴무일": "연중무휴"}, {"이름": "세미양빌딩(낭)", "IG/Homepage": "", "가격대": "FREE", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/x8tpWZZM", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "0-12개월, 2-3세, 4-6세", "영업시간": "10:00-18:00", "주소": "제주특별자치도 제주시 첨단로 330", "카카오맵URL": "https://place.map.kakao.com/102473289", "카테고리": "육아종합지원", "키즈태그": "놀이터, 도서관, 실내놀이, 주차", "한줄카피": "도서관과 실내놀이터가 함께 있는 무료 공간", "휴무일": "월요일, 화요일"}, {"이름": "화조원", "IG/Homepage": "http://www.instagram.com/flowerbirdpark", "가격대": "💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/58Nd0xSz", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 애월읍 애원로 804", "카카오맵URL": "https://place.map.kakao.com/747735691", "카테고리": "동물원/체험", "키즈태그": "동물체험, 산책, 실외놀이, 유모차접근, 주차", "한줄카피": "새와 동물 가까이서 먹이주기 체험", "휴무일": "연중무휴"}, {"이름": "제주양떼목장", "IG/Homepage": "http://www.sheepinjeju.com/", "가격대": "💵💵", "계절": "가을, 봄", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/GWe2IbUE", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-18:00", "주소": "제주특별자치도 제주시 애월읍 도치돌길 289-13", "카카오맵URL": "https://place.map.kakao.com/1174532899", "카테고리": "목장", "키즈태그": "동물체험, 산책, 실외놀이, 주차", "한줄카피": "양 먹이주기, 잔디 언덕", "휴무일": "월요일"}, {"이름": "아침미소목장", "IG/Homepage": "https://www.instagram.com/morningsmile_dairy_farm", "가격대": "💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/5pws2zzg", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-19:00", "주소": "제주특별자치도 제주시 첨단동길 160-30", "카카오맵URL": "https://place.map.kakao.com/12697401", "카테고리": "목장", "키즈태그": "동물체험, 산책, 실외놀이, 주차", "한줄카피": "젖소 우유 짜기 체험, 치즈 만들기", "휴무일": "연중무휴"}, {"이름": "제주안전체험관", "IG/Homepage": "http://www.jeju.go.kr/119safe", "가격대": "FREE", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/xNLZXald", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 애월읍 평화로 1885", "카카오맵URL": "https://place.map.kakao.com/608888753", "카테고리": "체험관", "키즈태그": "실내놀이, 주차", "한줄카피": "지진·화재·교통 안전 체험 (예약제)", "휴무일": "화요일"}, {"이름": "노루생태관찰원", "IG/Homepage": "https://www.jejusi.go.kr/roedeer/main.do", "가격대": "💵", "계절": "가을, 봄", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/5GpYBiKA", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 명림로 520", "카카오맵URL": "https://place.map.kakao.com/12721319", "카테고리": "자연/체험", "키즈태그": "놀이터, 동물체험, 실외놀이, 주차", "한줄카피": "노루 가까이서 관찰, 산책로", "휴무일": "연중무휴"}, {"이름": "새별프렌즈", "IG/Homepage": "https://www.instagram.com/sbfriends_official", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/FBe2u54z", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 애월읍 평화로 1529", "카카오맵URL": "https://place.map.kakao.com/336100555", "카테고리": "자연/체험", "키즈태그": "동물체험, 실내놀이, 실외놀이, 주차", "한줄카피": "새별오름 근처 가족 시설 (상세 확인필요)", "휴무일": "연중무휴"}, {"이름": "제주돌문화공원", "IG/Homepage": "https://www.instagram.com/jejustonepark/", "가격대": "💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/xVBxGvRJ", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 조천읍 남조로 2023 1층", "카카오맵URL": "https://place.map.kakao.com/13322621", "카테고리": "공원/박물관", "키즈태그": "산책, 실내놀이, 실외놀이, 유모차접근, 주차", "한줄카피": "제주 돌 문화 야외 박물관, 산책 코스 풍부, 실내 어린이 놀이공간 있음", "휴무일": "월요일"}, {"이름": "에코랜드", "IG/Homepage": "https://www.instagram.com/ecoland_jeju/", "가격대": "💵💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/GMmgqDjq", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "08:30-19:00", "주소": "제주특별자치도 제주시 조천읍 남조로 1982", "카카오맵URL": "https://place.map.kakao.com/17184223", "카테고리": "테마파크", "키즈태그": "산책, 실외놀이, 유모차접근, 주차", "한줄카피": "기차 타고 곶자왈 한 바퀴", "휴무일": "연중무휴"}, {"이름": "뽀로로&타요 테마파크", "IG/Homepage": "https://www.instagram.com/pororotayo_jeju/", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/GALR7JCg", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "13-24개월, 2-3세, 4-6세", "영업시간": "10:00-18:00", "주소": "제주특별자치도 서귀포시 안덕면 병악로 269", "카카오맵URL": "https://place.map.kakao.com/1155988847", "카테고리": "테마파크", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이, 주차", "한줄카피": "뽀로로·타요 캐릭터 실내 테마파크", "휴무일": "연중무휴"}, {"이름": "카멜리아힐", "IG/Homepage": "https://www.instagram.com/camelliahilljeju", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/GFB10Aam", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "08:30-18:30", "주소": "제주특별자치도 서귀포시 안덕면 병악로 166", "카카오맵URL": "https://place.map.kakao.com/9461977", "카테고리": "정원/식물원", "키즈태그": "산책, 실외놀이, 유모차접근, 주차", "한줄카피": "동백꽃 정원, 사계절 꽃 명소", "휴무일": "연중무휴"}, {"이름": "호텔샌드", "IG/Homepage": "https://www.instagram.com/hotelsand_", "가격대": "💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/FHlgNVlc", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-20:00", "주소": "제주특별자치도 제주시 한림읍 한림로 339 1층", "카카오맵URL": "https://place.map.kakao.com/1500112810", "카테고리": "카페", "키즈태그": "산책", "한줄카피": "협재해수욕장에 바로 붙어있는 인기 카페, 바닷가 선베드에 아기와 함께 있기 좋음", "휴무일": "연중무휴"}, {"이름": "한림공원", "IG/Homepage": "https://www.instagram.com/jeju_hallimpark", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/5fIpjjSx", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 한림읍 한림로 300", "카카오맵URL": "https://place.map.kakao.com/10941032", "카테고리": "공원/식물원", "키즈태그": "산책, 유모차접근, 주차", "한줄카피": "협재굴 포함 대형 종합 공원", "휴무일": "연중무휴"}, {"이름": "세계자동차&피아노박물관", "IG/Homepage": "https://www.instagram.com/automobilepiano/", "가격대": "💵💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/GALR1J9T", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 서귀포시 안덕면 중산간서로 1610", "카카오맵URL": "https://place.map.kakao.com/7952882", "카테고리": "박물관", "키즈태그": "동물체험, 실내놀이, 주차", "한줄카피": "어린이 운전 체험존, 다양한 탈것 구경, 비 오는 날 추천", "휴무일": "연중무휴"}, {"이름": "제주돗", "IG/Homepage": "", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/FO9om1af", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "16:00-22:00", "주소": "제주특별자치도 제주시 한경면 조수2길 34 1층", "카카오맵URL": "https://place.map.kakao.com/287748982", "카테고리": "식당/고깃집", "키즈태그": "놀이터, 실외놀이, 유아의자, 주차", "한줄카피": "어린이 놀이터가 있는 고깃집, 가족 외식 OK", "휴무일": "화요일"}, {"이름": "카멜리아북스앤카페", "IG/Homepage": "https://www.instagram.com/camelliabooksandcafe", "가격대": "💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/FfeXuSPV", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "12:00-17:00", "주소": "제주특별자치도 서귀포시 안덕면 화순서서로 262", "카카오맵URL": "https://place.map.kakao.com/380162760", "카테고리": "책방/카페", "키즈태그": "실내놀이, 유아의자, 주차", "한줄카피": "책과 함께하는 감성 공간", "휴무일": "월요일, 일요일"}, {"이름": "산양큰엉곶", "IG/Homepage": "https://www.instagram.com/sanyang_keunkot", "가격대": "💵💵", "계절": "가을, 봄", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/x0UPhNDc", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "09:00-19:00", "주소": "제주특별자치도 제주시 한경면 청수리 956-6", "카카오맵URL": "https://place.map.kakao.com/1901034660", "카테고리": "자연/숲", "키즈태그": "동물체험, 산책, 실외놀이, 주차", "한줄카피": "동화같은 숲길, 기차길 포토존", "휴무일": "연중무휴"}, {"이름": "스누피가든", "IG/Homepage": "https://www.instagram.com/snoopygarden_jeju", "가격대": "💵💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/502MzmiO", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 구좌읍 금백조로 930", "카카오맵URL": "https://place.map.kakao.com/852041742", "카테고리": "정원/테마파크", "키즈태그": "산책, 실내놀이, 실외놀이, 유모차접근, 주차", "한줄카피": "스누피 캐릭터와 정원 산책", "휴무일": "연중무휴"}, {"이름": "그림책방 벨벨왓", "IG/Homepage": "https://www.instagram.com/bellbellwhat", "가격대": "💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/Fnm52LRt", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "4-6세, 7세+", "영업시간": "10:00-18:00", "주소": "제주특별자치도 제주시 구좌읍 송당3길 21-20 1층", "카카오맵URL": "https://place.map.kakao.com/336694636", "카테고리": "카페", "키즈태그": "실내놀이, 주차", "한줄카피": "책 보기 좋은 카페", "휴무일": "월요일"}, {"이름": "목장카페 밭디", "IG/Homepage": "https://www.instagram.com/batti_jeju", "가격대": "💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/xf5AG0hW", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:00-18:00", "주소": "제주특별자치도 서귀포시 표선면 번영로 2486", "카카오맵URL": "https://place.map.kakao.com/1011635289", "카테고리": "카페/목장", "키즈태그": "동물체험, 실외놀이, 유아의자, 주차", "한줄카피": "목장 뷰 카페 (정확 위치 확인필요)", "휴무일": "연중무휴"}, {"이름": "어린왕자감귤밭", "IG/Homepage": "https://www.instagram.com/leebanzang", "가격대": "💵💵", "계절": "가을, 겨울", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/5PVaq2s7", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "09:30-20:00", "주소": "제주특별자치도 서귀포시 대정읍 추사로36번길 45-1 1층", "카카오맵URL": "https://place.map.kakao.com/363468370", "카테고리": "농장체험", "키즈태그": "동물체험, 산책, 실외놀이, 주차", "한줄카피": "감귤 따기 체험 (11월~2월 시즌)", "휴무일": "연중무휴"}, {"이름": "산방산랜드", "IG/Homepage": "", "가격대": "💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/FHlgNXU9", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "2-3세, 4-6세, 7세+", "영업시간": "09:30-18:00", "주소": "제주특별자치도 서귀포시 안덕면 사계남로216번길 24-9", "카카오맵URL": "https://place.map.kakao.com/11059651", "카테고리": "테마파크", "키즈태그": "실외놀이, 주차", "한줄카피": "산방산 아래 어린이 놀이공원", "휴무일": "연중무휴"}, {"이름": "아이올레인포레스트", "IG/Homepage": "https://www.instagram.com/iolle_inforest", "가격대": "💵💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/GV2jWjXL", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-19:00", "주소": "제주특별자치도 제주시 구좌읍 덕행로 359", "카카오맵URL": "https://place.map.kakao.com/1819171437", "카테고리": "키즈카페/숲놀이", "키즈태그": "놀이터, 실내놀이, 실외놀이, 주차", "한줄카피": "숲 컨셉 키즈카페", "휴무일": "연중무휴"}, {"이름": "놀놀플레이그라운드카페", "IG/Homepage": "", "가격대": "💵", "계절": "연중", "날씨적합": "날씨무관", "네이버지도URL": "https://naver.me/513hnbna", "상태": "게시중", "시즌이벤트": "", "실내외": "혼합", "연령적합": "13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "09:30-19:00", "주소": "제주특별자치도 제주시 구좌읍 비자림로 2228 b동", "카카오맵URL": "https://place.map.kakao.com/1608544288", "카테고리": "카페", "키즈태그": "놀이터, 실내놀이, 실외놀이, 주차", "한줄카피": "놀이 + 카페 결합형", "휴무일": "화요일"}, {"이름": "제주특별자치도환경성질환예방관리센터(비자숲힐링센터-아랑이놀이터)", "IG/Homepage": "https://www.jejuatopycenter.kr/bbs/program_view.php?bo_table=programs&wr_id=1", "가격대": "💵", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/xBwLTMq7", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세", "영업시간": "09:00-18:00", "주소": "제주특별자치도 제주시 구좌읍 다랑쉬북로 68-92", "카카오맵URL": "https://place.map.kakao.com/921951978", "카테고리": "체험관/교육", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이, 주차", "한줄카피": "사전예약필수, 원목 교구들로 꾸며진 놀이터", "휴무일": "월요일, 일요일"}, {"이름": "들락날락센터", "IG/Homepage": "", "가격대": "FREE", "계절": "연중", "날씨적합": "☔️/🔥/😷", "네이버지도URL": "https://naver.me/FPnrJPZs", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세", "영업시간": "14:00-17:00", "주소": "제주특별자치도 제주시 구좌읍 행원로 44", "카카오맵URL": "https://place.map.kakao.com/1124618246", "카테고리": "육아종합지원", "키즈태그": "기저귀교환대, 놀이터, 수유실, 실내놀이", "한줄카피": "교회에서 지역사회 아이들과 부모님들을 위해 설립/운영하고 있으며, 놀이공간, 카페, 스터디룸을 제공하는 곳", "휴무일": "월요일, 일요일, 화요일"}, {"이름": "오브시퀀스", "IG/Homepage": "https://www.instagram.com/of_sequence", "가격대": "💵💵", "계절": "연중", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/ximwTCJN", "상태": "게시중", "시즌이벤트": "", "실내외": "실내", "연령적합": "0-12개월, 13-24개월, 2-3세, 4-6세, 7세+", "영업시간": "10:00-17:00", "주소": "제주특별자치도 서귀포시 표선면 세화강왓로85번길 45 2호", "카카오맵URL": "https://place.map.kakao.com/1112022967", "카테고리": "카페", "키즈태그": "산책, 실외놀이, 유아의자, 주차", "한줄카피": "예스키즈존 카페, 아이 동반 환영", "휴무일": "연중무휴"}, {"이름": "제주레일바이크", "IG/Homepage": "https://www.instagram.com/jeju_railbike_", "가격대": "💵💵💵", "계절": "가을, 봄, 여름", "날씨적합": "🌞", "네이버지도URL": "https://naver.me/Gn0yuvXs", "상태": "게시중", "시즌이벤트": "", "실내외": "실외", "연령적합": "4-6세, 7세+", "영업시간": "09:00-17:00", "주소": "제주특별자치도 제주시 구좌읍 용눈이오름로 641", "카카오맵URL": "https://place.map.kakao.com/21777957", "카테고리": "체험", "키즈태그": "산책, 주차", "한줄카피": "가족이 함께 타는 레일바이크", "휴무일": "연중무휴"}, {"이름": "", "IG/Homepage": "", "가격대": "", "계절": "", "날씨적합": "", "네이버지도URL": "", "상태": "", "시즌이벤트": "", "실내외": "", "연령적합": "", "영업시간": "", "주소": "", "카카오맵URL": "", "카테고리": "", "키즈태그": "", "한줄카피": "", "휴무일": ""}];
+
+let state = { view: "비오는날", age: null, tags: [] };
+
+const AGE_GROUPS = ["0-12개월", "13-24개월", "2-3세", "4-6세", "7세+"];
+const TAG_PRIORITY = ["놀이터", "실내놀이", "실외놀이", "수유실", "기저귀교환대", "유아의자", "유아메뉴", "유모차접근", "주차", "동물체험", "산책", "바다"];
+
+const VIEWS = [
+  {
+    name: "비오는날", emoji: "🌧",
+    desc: "비 오는 날에도 갈 수 있는 실내 위주 장소",
+    match: p => {
+      const w = (p["날씨적합"] || "").split("/").map(s => s.trim());
+      const indoor = (p["실내외"] || "").includes("실내") || (p["실내외"] || "").includes("혼합");
+      return w.includes("☔️") || indoor;
+    }
+  },
+  {
+    name: "얼리버드", emoji: "🐟",
+    desc: "오전 일찍부터 여는 장소 (10시 이전 오픈)",
+    match: p => {
+      const h = (p["영업시간"] || "").trim();
+      if (!h || h === "상시" || h === "확인필요") return false;
+      const start = h.split("-")[0].trim();
+      const m = start.match(/^(\d{1,2}):(\d{2})/);
+      if (!m) return false;
+      const total = parseInt(m[1]) * 60 + parseInt(m[2]);
+      return total < 10 * 60;
+    }
+  },
+  {
+    name: "놀이터", emoji: "🛝",
+    desc: "키즈태그 '놀이터' 포함",
+    match: p => {
+      const tags = (p["키즈태그"] || "").split(",").map(s => s.trim());
+      return tags.includes("놀이터");
+    }
+  },
+  {
+    name: "자연즐기기", emoji: "🌿",
+    desc: "공원, 숲, 정원, 해변 등 자연 속에서",
+    match: p => /자연|공원|정원|꽃밭|해변|숲/.test(p["카테고리"] || "")
+  },
+  {
+    name: "먹고마시고", emoji: "🧁",
+    desc: "카페, 식당, 베이커리 — 아이와 함께 먹는 시간",
+    match: p => /카페|식당|베이커리|브런치|책방|레스토랑/.test(p["카테고리"] || "")
+  },
+  {
+    name: "동물체험", emoji: "🐰",
+    desc: "동물을 만지고 교감할 수 있는 곳",
+    match: p => {
+      const c = p["카테고리"] || "";
+      const tags = (p["키즈태그"] || "").split(",").map(s => s.trim());
+      return /동물원|목장/.test(c) || tags.includes("동물체험");
+    }
+  },
+  {
+    name: "아기랑", emoji: "👶",
+    desc: "24개월 이하 영아도 함께 갈 수 있는 곳",
+    match: p => {
+      const ages = (p["연령적합"] || "").split(",").map(s => s.trim());
+      return ages.includes("0-12개월") || ages.includes("13-24개월");
+    }
+  },
+  {
+    name: "클래스", emoji: "🍀",
+    desc: "체험·교육 클래스 프로그램",
+    match: p => /클래스|체험관\/교육|^체험$|교육/.test(p["카테고리"] || "")
+  },
+  {
+    name: "전체보기", emoji: "😎",
+    desc: "DB의 모든 게시중 장소",
+    match: p => true
+  }
+];
+
+function load() {
+  renderAll();
+}
+
+function renderTabs() {
+  const el = document.getElementById("tabs");
+  el.innerHTML = VIEWS.map(v => `
+    <button class="tab ${state.view === v.name ? "active" : ""}" data-name="${v.name}">
+      <span>${v.emoji}</span><span>${v.name}</span>
+    </button>
+  `).join("");
+  el.querySelectorAll(".tab").forEach(t => {
+    t.onclick = () => {
+      state.view = t.dataset.name;
+      state.age = null;
+      state.tags = [];
+      renderAll();
+    };
+  });
+}
+
+function buildSubFilters() {
+  const ageEl = document.getElementById("ageChips");
+  ageEl.innerHTML = "";
+  AGE_GROUPS.forEach(a => {
+    const c = document.createElement("button");
+    c.className = "chip" + (state.age === a ? " active" : "");
+    c.textContent = a;
+    c.onclick = () => {
+      state.age = state.age === a ? null : a;
+      buildSubFilters(); renderList();
+    };
+    ageEl.appendChild(c);
+  });
+
+  const tagEl = document.getElementById("tagChips");
+  tagEl.innerHTML = "";
+  TAG_PRIORITY.forEach(t => {
+    const c = document.createElement("button");
+    c.className = "chip" + (state.tags.includes(t) ? " active" : "");
+    c.textContent = t;
+    c.onclick = () => {
+      if (state.tags.includes(t)) state.tags = state.tags.filter(x => x !== t);
+      else state.tags.push(t);
+      buildSubFilters(); renderList();
+    };
+    tagEl.appendChild(c);
+  });
+}
+
+function getCurrentView() {
+  return VIEWS.find(v => v.name === state.view);
+}
+
+function matchPlace(p) {
+  if (p["상태"] && p["상태"] !== "게시중") return false;
+  const view = getCurrentView();
+  if (!view.match(p)) return false;
+  if (state.age) {
+    const ages = (p["연령적합"] || "").split(",").map(s => s.trim());
+    if (!ages.includes(state.age)) return false;
+  }
+  if (state.tags.length) {
+    const tags = (p["키즈태그"] || "").split(",").map(s => s.trim());
+    if (!state.tags.every(t => tags.includes(t))) return false;
+  }
+  return true;
+}
+
+function renderList() {
+  const filtered = PLACES.filter(matchPlace);
+  document.getElementById("count").textContent = filtered.length;
+  const list = document.getElementById("list");
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">조건에 맞는 장소가 없어요<br>필터를 조정해보세요</div>';
+    return;
+  }
+  list.innerHTML = filtered.map(p => {
+    const tags = (p["키즈태그"] || "").split(",").map(s => s.trim()).filter(Boolean);
+    const ages = (p["연령적합"] || "").split(",").map(s => s.trim()).filter(Boolean);
+    const naver = p["네이버지도URL"];
+    const kakao = p["카카오맵URL"];
+    const ig = p["IG/Homepage"];
+    const weather = (p["날씨적합"] || "").split("/").map(s => s.trim()).filter(Boolean).join(" ");
+    const season = p["시즌이벤트"];
+
+    return `
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-name">${p["이름"]}</div>
+            <div class="card-cat">${p["카테고리"] || ""}${p["실내외"] ? " · " + p["실내외"] : ""}</div>
+          </div>
+          <div class="price">${p["가격대"] || ""}</div>
+        </div>
+
+        ${p["한줄카피"] ? `<div class="copy">${p["한줄카피"]}</div>` : ""}
+
+        <div class="info-row"><span class="ico">📍</span><span class="val">${p["주소"] || "-"}</span></div>
+        <div class="info-row"><span class="ico">🕐</span><span class="val">${p["영업시간"] || "-"}${p["휴무일"] ? ` · 휴무: ${p["휴무일"]}` : ""}</span></div>
+        <div class="info-row"><span class="ico">👶</span><span class="val">${ages.join(", ") || "-"}</span></div>
+        <div class="info-row"><span class="ico">☀️</span><span class="val">${weather || "날씨무관"}${season ? ` · ${season}` : ""}</span></div>
+
+        ${tags.length ? `<div class="tags">${tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>` : ""}
+
+        <div class="actions">
+          ${kakao ? `<a class="btn primary" href="${kakao}" target="_blank">카카오맵</a>` : ""}
+          ${naver ? `<a class="btn" href="${naver}" target="_blank">네이버지도</a>` : ""}
+          ${ig ? `<a class="btn" href="${ig}" target="_blank">정보</a>` : ""}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderAll() {
+  renderTabs();
+  document.getElementById("viewDesc").textContent = getCurrentView().desc;
+  buildSubFilters();
+  renderList();
+}
+
+function resetSubFilters() {
+  state.age = null;
+  state.tags = [];
+  buildSubFilters();
+  renderList();
+}
+
+load();
+</script>
+</body>
+</html>

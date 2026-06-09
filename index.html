@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YesKidsJeju: 제주 양육자를 위한 키즈 친화 장소</title>
+<title>YesKidsJeju — 제주 양육자를 위한 키즈 친화 장소</title>
 
 <!-- SEO -->
 <meta name="description" content="제주 양육자를 위한 키즈 친화 장소 큐레이션. 비오는 날·동물체험·놀이터·자연·카페까지 카테고리별로 빠르게 찾아보세요.">
@@ -18,7 +18,7 @@
 <meta property="og:site_name" content="YesKidsJeju">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:url" content="https://www.yeskidsjeju.com/">
-<meta property="og:title" content="YesKidsJeju: 제주 양육자를 위한 키즈 친화 장소">
+<meta property="og:title" content="YesKidsJeju — 제주 양육자를 위한 키즈 친화 장소">
 <meta property="og:description" content="비오는 날·동물체험·놀이터·자연·카페까지. 제주 가족 외출을 위한 양육자 큐레이션.">
 <meta property="og:image" content="https://www.yeskidsjeju.com/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -26,7 +26,7 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="YesKidsJeju: 제주 양육자를 위한 키즈 친화 장소">
+<meta name="twitter:title" content="YesKidsJeju — 제주 양육자를 위한 키즈 친화 장소">
 <meta name="twitter:description" content="비오는 날·동물체험·놀이터·자연·카페까지. 제주 가족 외출을 위한 양육자 큐레이션.">
 <meta name="twitter:image" content="https://www.yeskidsjeju.com/og-image.png">
 
@@ -216,12 +216,58 @@
     text-align: center; padding: 30px 20px 10px;
     font-size: 11px; color: var(--text-sub);
   }
+
+  /* Support card */
+  .support {
+    margin: 20px 20px 0;
+    background: linear-gradient(180deg, #FFF5EA 0%, #FFEFD8 100%);
+    border: 1px solid #F5DCBF;
+    border-radius: 16px;
+    padding: 22px 20px 20px;
+    text-align: center;
+  }
+  .support-emoji {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .support-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .support-desc {
+    font-size: 12.5px;
+    color: var(--text-sub);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .support-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 18px;
+    background: #FEE500;
+    color: #191919;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .support-btn:hover { opacity: 0.85; }
+  .support-sub {
+    font-size: 11px;
+    color: var(--text-sub);
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
 <div class="container">
   <header>
-    <div class="logo">🍊 YesKidsJeju 🧒</div>
+    <div class="logo">🍊 YesKidsJeju</div>
     <div class="tagline">제주 양육자를 위한 키즈 친화 장소 가이드</div>
   </header>
 
@@ -252,6 +298,19 @@
   </div>
 
   <div class="list" id="list"></div>
+
+  <section class="support">
+    <div class="support-emoji">💌</div>
+    <div class="support-title">YesKidsJeju를 응원해주세요</div>
+    <div class="support-desc">
+      이 가이드는 제주에 사는 양육자가 직접 가보고 정리하는<br>
+      사이드 프로젝트예요. 여러분의 응원이 다음 큐레이션의 동력이 됩니다.
+    </div>
+    <a class="support-btn" href="https://open.kakao.com/o/s6pzmNyi" target="_blank" rel="noopener">
+      💬  카카오 오픈채팅으로 응원하기
+    </a>
+    <div class="support-sub">익명으로 메시지나 후원을 보낼 수 있어요</div>
+  </section>
 
   <footer>
     🍊 YesKidsJeju · 데이터는 Notion으로 관리됩니다<br>

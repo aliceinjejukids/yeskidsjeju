@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- 귤 본체 -->
+  <circle cx="50" cy="58" r="38" fill="#FF8A3D"/>
+  <!-- 하이라이트 -->
+  <ellipse cx="38" cy="46" rx="10" ry="8" fill="#FFB073" opacity="0.6"/>
+  <!-- 잎 -->
+  <ellipse cx="50" cy="22" rx="9" ry="5" fill="#4A8C3F" transform="rotate(-20 50 22)"/>
+  <!-- 줄기 -->
+  <path d="M50 18 L52 10" stroke="#3A6B30" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

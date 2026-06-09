@@ -26,43 +26,60 @@ export default async function handler(req, res) {
   }
 }
 
-// 받은 ID가 페이지면 그 안의 데이터베이스를 찾아서 DB ID 반환
+// 받은 ID가 DB가 아닐 수도 있어서 여러 방법으로 진짜 DB ID 찾기
 async function resolveDatabaseId(token, id) {
-  // 1) 그냥 DB로 조회 시도
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Notion-Version": "2022-06-28",
+    "Content-Type": "application/json"
+  };
+
+  // 1) 그냥 DB로 조회 시도 (가장 일반적인 경우)
   const dbRes = await fetch(`https://api.notion.com/v1/databases/${id}`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Notion-Version": "2022-06-28"
-    }
+    headers
   });
-  if (dbRes.ok) return id; // 진짜 DB ID였음
+  if (dbRes.ok) return id;
 
-  // 2) 페이지로 보고 자식 블록 중 데이터베이스 찾기
-  const childrenRes = await fetch(
-    `https://api.notion.com/v1/blocks/${id}/children?page_size=100`,
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Notion-Version": "2022-06-28"
+  // 2) 페이지면 자식 블록 중 데이터베이스 찾기 (inline DB)
+  try {
+    const childrenRes = await fetch(
+      `https://api.notion.com/v1/blocks/${id}/children?page_size=100`,
+      { method: "GET", headers }
+    );
+    if (childrenRes.ok) {
+      const data = await childrenRes.json();
+      const childDb = data.results.find(
+        b => b.type === "child_database" || b.type === "database"
+      );
+      if (childDb) {
+        const childCheck = await fetch(
+          `https://api.notion.com/v1/databases/${childDb.id}`,
+          { method: "GET", headers }
+        );
+        if (childCheck.ok) return childDb.id;
       }
     }
-  );
-  if (!childrenRes.ok) {
-    const t = await childrenRes.text();
-    throw new Error(`페이지 자식 조회 실패 ${childrenRes.status}: ${t}`);
+  } catch (_) {}
+
+  // 3) Search API로 Integration이 권한 가진 모든 DB 검색해서 첫 번째 사용
+  const searchRes = await fetch("https://api.notion.com/v1/search", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      filter: { value: "database", property: "object" }
+    })
+  });
+  if (searchRes.ok) {
+    const data = await searchRes.json();
+    if (data.results && data.results.length > 0) {
+      return data.results[0].id;
+    }
   }
-  const data = await childrenRes.json();
-  const childDb = data.results.find(
-    b => b.type === "child_database" || b.type === "database"
+
+  throw new Error(
+    "권한 있는 데이터베이스를 찾지 못했어요. 노션 Integration이 데이터베이스에 연결되어 있는지 확인해주세요."
   );
-  if (!childDb) {
-    throw new Error(
-      "페이지 안에서 데이터베이스를 찾지 못했어요. 노션에서 DB의 직접 링크를 받아 NOTION_DB_ID에 다시 설정해주세요."
-    );
-  }
-  return childDb.id;
 }
 
 // 노션 DB의 모든 페이지 가져오기 (100개씩, pagination 지원)

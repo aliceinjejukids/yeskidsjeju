@@ -272,9 +272,8 @@
   </header>
 
   <div class="intro">
-    🤔 오늘 제주에서 아기와 뭐할지 고민하는 양육자를 위한 큐레이션입니다.<br>
-    아래 탭에서 [비오는날], [동물체험] 등 원하는 카테고리를 선택해보세요.<br>
-    ⚠️ 방문 전 지도, 공식 인스타그램 등을 통해 휴무일, 오픈시간 등을 반드시 확인하세요!
+    오늘 제주에서 아기와 뭐할지 고민하는 양육자를 위한 큐레이션입니다.<br>
+    아래 탭에서 [비오는날], [동물체험] 등 원하는 카테고리를 선택해보세요.
   </div>
 
   <div class="tabs-wrap">
@@ -457,6 +456,20 @@ function renderTabs() {
   });
 }
 
+// PC에서 마우스 휠을 가로 스크롤로 변환 (모바일은 터치 스와이프로 동작)
+function enableHorizontalScroll() {
+  document.querySelectorAll(".tabs, .chips").forEach(el => {
+    if (el.dataset.wheelBound) return;
+    el.dataset.wheelBound = "1";
+    el.addEventListener("wheel", (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    }, { passive: false });
+  });
+}
+
 function buildSubFilters() {
   const ageEl = document.getElementById("ageChips");
   ageEl.innerHTML = "";
@@ -558,6 +571,7 @@ function renderAll() {
   document.getElementById("viewDesc").textContent = getCurrentView().desc;
   buildSubFilters();
   renderList();
+  enableHorizontalScroll();
 }
 
 function resetSubFilters() {

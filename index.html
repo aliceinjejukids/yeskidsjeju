@@ -100,6 +100,182 @@
     font-weight: 600;
   }
 
+  /* ============ 아기 월령 토글 ============ */
+  .baby-row {
+    padding: 0 20px 14px;
+  }
+  .baby-label {
+    font-size: 11px;
+    color: var(--text-sub);
+    margin-bottom: 6px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .baby-chips {
+    display: flex; gap: 5px; overflow-x: auto; padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .baby-chips::-webkit-scrollbar { display: none; }
+  .baby-chip {
+    flex-shrink: 0;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: white;
+    border: 1px solid var(--line);
+    font-size: 11.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .baby-chip.active {
+    background: var(--text);
+    color: white;
+    border-color: var(--text);
+    font-weight: 600;
+  }
+
+  /* ============ 날씨 섹션 ============ */
+  .weather-section { margin: 0 16px 18px; }
+  .weather-title {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4px 10px;
+  }
+  .weather-title h2 {
+    font-size: 15px; font-weight: 700;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .weather-refresh {
+    font-size: 11px; color: var(--text-sub); background: none; border: none;
+    cursor: pointer; font-family: inherit;
+  }
+  .region-tabs {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 0 4px 10px; scrollbar-width: none;
+  }
+  .region-tabs::-webkit-scrollbar { display: none; }
+  .region-tab {
+    flex-shrink: 0; padding: 7px 13px; border-radius: 999px;
+    background: white; border: 1px solid var(--line);
+    font-size: 12.5px; cursor: pointer; white-space: nowrap;
+    font-family: inherit;
+  }
+  .region-tab.active {
+    background: var(--primary); color: white; border-color: var(--primary); font-weight: 600;
+  }
+  .today-card {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FFF5EA 100%);
+    border: 1px solid var(--line);
+    border-radius: 16px; padding: 20px 18px; margin-bottom: 12px;
+  }
+  .today-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .today-region { font-size: 13px; font-weight: 600; color: var(--text-sub); display: flex; align-items: center; gap: 4px; }
+  .today-date { font-size: 11px; color: var(--text-sub); }
+  .today-main { display: flex; align-items: center; gap: 16px; padding: 4px 0 16px; }
+  .today-icon { font-size: 64px; line-height: 1; }
+  .today-temp { font-size: 36px; font-weight: 800; }
+  .today-temp .high { color: #D85A30; }
+  .today-temp .sep { color: var(--text-sub); font-weight: 400; margin: 0 4px; }
+  .today-temp .low { color: #5B92C7; }
+  .today-desc { font-size: 13px; color: var(--text); margin-top: 2px; }
+
+  .metrics {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line);
+    border-radius: 10px; overflow: hidden; margin-bottom: 16px;
+  }
+  .metric { background: white; padding: 10px 8px; text-align: center; }
+  .metric-label { font-size: 10.5px; color: var(--text-sub); margin-bottom: 3px; }
+  .metric-value { font-size: 13px; font-weight: 700; color: var(--text); }
+  .metric-value.good { color: #4A8C3F; }
+  .metric-value.warn { color: #D85A30; }
+  .metric-value.bad { color: #B33A1E; }
+
+  /* 옷차림 */
+  .outfit { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line); }
+  .outfit-title {
+    font-size: 11px; color: var(--text-sub); font-weight: 600;
+    margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .outfit-title .feels { color: var(--text); font-weight: 700; }
+  .outfit-clothes {
+    background: #FFFBF4; border: 1px solid #F3E1C9; border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 10px;
+  }
+  .outfit-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; padding: 3px 0; }
+  .outfit-item-ico { font-size: 15px; width: 22px; text-align: center; }
+  .outfit-item-note { color: var(--text-sub); font-size: 11.5px; }
+  .outfit-extras {
+    background: var(--primary-soft); border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 16px;
+  }
+  .outfit-extras-head { font-size: 11px; font-weight: 700; margin-bottom: 7px; color: #8A4A1F; }
+  .outfit-extras-list { display: flex; flex-wrap: wrap; gap: 5px; }
+  .extra-chip {
+    background: white; border-radius: 8px; padding: 5px 9px; font-size: 11.5px; color: var(--text);
+  }
+  .extra-chip.alert {
+    background: #FFE4E1; color: #B33A1E; font-weight: 700;
+  }
+
+  /* 시간별 */
+  .hourly-title { font-size: 11px; color: var(--text-sub); font-weight: 600; margin-bottom: 8px; padding: 0 2px; }
+  .hourly {
+    display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px;
+  }
+  .hourly::-webkit-scrollbar { display: none; }
+  .hour-slot {
+    flex-shrink: 0; width: 52px; text-align: center;
+    padding: 8px 4px; border-radius: 8px;
+    background: rgba(255, 229, 208, 0.4);
+  }
+  .hour-time { font-size: 10.5px; color: var(--text-sub); margin-bottom: 4px; }
+  .hour-icon { font-size: 18px; margin-bottom: 2px; }
+  .hour-temp { font-size: 13px; font-weight: 700; }
+  .hour-rain { font-size: 9.5px; color: #5B92C7; margin-top: 2px; }
+
+  /* 7일 예보 */
+  .weekly {
+    background: white; border: 1px solid var(--line);
+    border-radius: 14px; padding: 14px; margin-bottom: 12px;
+  }
+  .weekly-title { font-size: 12px; color: var(--text-sub); font-weight: 600; margin-bottom: 10px; }
+  .day-row {
+    display: grid; grid-template-columns: 50px 26px 1fr 50px;
+    align-items: center; gap: 8px; padding: 9px 0;
+    border-top: 1px solid var(--line); font-size: 12.5px;
+  }
+  .day-row:first-of-type { border-top: none; }
+  .day-row.today { font-weight: 700; }
+  .day-name .sat { color: #2B6FB5; }
+  .day-name .sun { color: #C93333; }
+  .day-icon { font-size: 18px; text-align: center; }
+  .day-bar-wrap { display: flex; align-items: center; gap: 6px; }
+  .day-bar {
+    flex: 1; height: 4px; border-radius: 2px;
+    background: linear-gradient(90deg, #E1ECF7 0%, #FFE5D0 100%);
+  }
+  .day-low { font-size: 11.5px; color: #5B92C7; font-weight: 700; }
+  .day-high { font-size: 11.5px; color: #D85A30; font-weight: 700; }
+  .day-rain { font-size: 10px; color: #5B92C7; text-align: center; }
+
+  /* 양육자 알림 */
+  .parent-tip {
+    background: #FFF3CD; border-radius: 12px;
+    padding: 12px 14px; font-size: 12.5px; color: #8A6D00;
+    display: flex; gap: 8px; align-items: flex-start; line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .parent-tip.danger { background: #FFE4E1; color: #B33A1E; }
+  .parent-tip-emoji { font-size: 16px; line-height: 1.3; }
+  .parent-tip a { color: inherit; font-weight: 700; }
+
+  .weather-loading {
+    background: white; border: 1px solid var(--line); border-radius: 14px;
+    padding: 30px; text-align: center; color: var(--text-sub); font-size: 13px;
+  }
+
   /* 위치 정렬 토글 */
   .location-row {
     padding: 14px 20px 0;
@@ -321,9 +497,26 @@
   </header>
 
   <div class="intro">
-    오늘 제주에서 아기와 뭐할지 고민하는 양육자를 위한 큐레이션입니다.<br>
-    아래 탭에서 [비오는날], [동물체험] 등 원하는 카테고리를 선택해보세요.
+    오늘 제주에서 아기와 뭐할지 고민하는 양육자를 위한 큐레이션입니다.
   </div>
+
+  <!-- 아기 월령 -->
+  <div class="baby-row">
+    <div class="baby-label">👶 우리 아기</div>
+    <div class="baby-chips" id="babyChips"></div>
+  </div>
+
+  <!-- 날씨 섹션 -->
+  <section class="weather-section" id="weatherSection">
+    <div class="weather-title">
+      <h2>☁️ 이번주 제주 날씨</h2>
+      <button class="weather-refresh" onclick="loadWeather(true)">새로고침</button>
+    </div>
+    <div class="region-tabs" id="regionTabs"></div>
+    <div id="weatherBody">
+      <div class="weather-loading">날씨 정보를 불러오는 중…</div>
+    </div>
+  </section>
 
   <div class="tabs-wrap">
     <div class="tabs" id="tabs"></div>
@@ -425,6 +618,7 @@ function toggleDistanceSort() {
     pos => {
       state.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       state.sortByDistance = true;
+      autoSelectRegion(pos.coords.latitude, pos.coords.longitude);
       renderAll();
     },
     err => {
@@ -716,6 +910,442 @@ function resetSubFilters() {
   buildSubFilters();
   renderList();
 }
+
+// =================== 아기 월령 ===================
+const BABY_AGES = [
+  { key: "infant",    label: "영아 0-12개월" },
+  { key: "toddler",   label: "걸음마 13-24개월" },
+  { key: "preschool", label: "유아 2-3세" },
+  { key: "kid",       label: "4-6세" },
+  { key: "school",    label: "7세+" }
+];
+
+function getBabyAge() {
+  return localStorage.getItem("babyAge") || "toddler";
+}
+function setBabyAge(k) {
+  localStorage.setItem("babyAge", k);
+  renderBabyChips();
+  if (WEATHER_CACHE) renderWeather(WEATHER_CACHE);
+}
+function renderBabyChips() {
+  const el = document.getElementById("babyChips");
+  if (!el) return;
+  const cur = getBabyAge();
+  el.innerHTML = BABY_AGES.map(b => `
+    <button class="baby-chip ${cur === b.key ? "active" : ""}" data-key="${b.key}">${b.label}</button>
+  `).join("");
+  el.querySelectorAll(".baby-chip").forEach(c => c.onclick = () => setBabyAge(c.dataset.key));
+}
+
+// =================== 날씨 데이터 ===================
+let WEATHER_CACHE = null;
+let WEATHER_REGION = localStorage.getItem("weatherRegion") || "jejusi";
+
+const REGION_LIST = [
+  { key: "jejusi",   name: "제주시" },
+  { key: "seogwipo", name: "서귀포시" },
+  { key: "aewol",    name: "애월" },
+  { key: "hallim",   name: "한림" },
+  { key: "seongsan", name: "성산" },
+  { key: "pyoseon",  name: "표선" },
+  { key: "jungmun",  name: "중문" },
+  { key: "hallasan", name: "한라산" }
+];
+
+async function loadWeather(forceFresh = false) {
+  const body = document.getElementById("weatherBody");
+  if (forceFresh) body.innerHTML = '<div class="weather-loading">새로고침 중…</div>';
+  try {
+    const url = `/api/weather?region=${WEATHER_REGION}${forceFresh ? "&t=" + Date.now() : ""}`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("날씨 응답 " + r.status);
+    WEATHER_CACHE = await r.json();
+    renderWeather(WEATHER_CACHE);
+  } catch (e) {
+    console.error(e);
+    body.innerHTML = `<div class="weather-loading">날씨 정보를 불러올 수 없어요<br><small style="opacity:0.6">${e.message}</small></div>`;
+  }
+}
+
+function changeRegion(key) {
+  WEATHER_REGION = key;
+  localStorage.setItem("weatherRegion", key);
+  renderRegionTabs();
+  loadWeather(true);
+}
+
+function renderRegionTabs() {
+  const el = document.getElementById("regionTabs");
+  if (!el) return;
+  el.innerHTML = REGION_LIST.map(r => `
+    <button class="region-tab ${WEATHER_REGION === r.key ? "active" : ""}" data-key="${r.key}">
+      ${WEATHER_REGION === r.key ? "📍 " : ""}${r.name}
+    </button>
+  `).join("");
+  el.querySelectorAll(".region-tab").forEach(t => t.onclick = () => changeRegion(t.dataset.key));
+}
+
+// =================== 날씨 → 아이콘/문구 ===================
+function skyIcon(sky, pty, hour) {
+  // PTY: 0없음 1비 2비/눈 3눈 4소나기 5빗방울 6빗방울눈날림 7눈날림
+  if (pty === "1" || pty === "5") return "🌧";
+  if (pty === "2" || pty === "6") return "🌨";
+  if (pty === "3" || pty === "7") return "❄️";
+  if (pty === "4") return "🌦";
+  // SKY: 1맑음 3구름많음 4흐림
+  const isNight = hour != null && (hour < 6 || hour >= 19);
+  if (sky === "1") return isNight ? "🌙" : "☀️";
+  if (sky === "3") return isNight ? "☁️" : "⛅";
+  if (sky === "4") return "☁️";
+  return "🌤";
+}
+function midSkyIcon(desc) {
+  if (!desc) return "🌤";
+  if (/소나기|구름많고\s*비/.test(desc)) return "🌦";
+  if (/비|뇌우/.test(desc)) return "🌧";
+  if (/눈/.test(desc)) return "❄️";
+  if (/구름많/.test(desc)) return "⛅";
+  if (/흐림/.test(desc)) return "☁️";
+  if (/맑음/.test(desc)) return "☀️";
+  return "🌤";
+}
+function skyDesc(sky, pty) {
+  if (pty === "1" || pty === "5") return "비";
+  if (pty === "2" || pty === "6") return "비/눈";
+  if (pty === "3" || pty === "7") return "눈";
+  if (pty === "4") return "소나기";
+  if (sky === "1") return "맑음";
+  if (sky === "3") return "구름많음";
+  if (sky === "4") return "흐림";
+  return "";
+}
+function feelsLike(t, rh, ws) {
+  // 단순 체감 (여름 더위지수, 겨울 풍속체감 근사)
+  if (t == null) return null;
+  if (t >= 27 && rh != null) {
+    return t + 0.55 * (1 - 0.01 * rh) * (t - 14.5);
+  }
+  if (t <= 10 && ws != null) {
+    const v = parseFloat(ws);
+    if (!isNaN(v) && v > 1.3) {
+      return 13.12 + 0.6215 * t - 11.37 * Math.pow(v * 3.6, 0.16) + 0.3965 * t * Math.pow(v * 3.6, 0.16);
+    }
+  }
+  return t;
+}
+function dayName(yyyymmdd, offset = 0) {
+  const y = +yyyymmdd.slice(0, 4), m = +yyyymmdd.slice(4, 6) - 1, d = +yyyymmdd.slice(6, 8);
+  const dt = new Date(y, m, d);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff = Math.round((dt - today) / 86400000);
+  if (diff === 0) return { name: "오늘", dow: dt.getDay() };
+  if (diff === 1) return { name: "내일", dow: dt.getDay() };
+  const dows = ["일","월","화","수","목","금","토"];
+  return { name: dows[dt.getDay()], dow: dt.getDay() };
+}
+
+// =================== 옷차림/챙기기 매트릭스 ===================
+function outfitClothes(feels, babyAge) {
+  // 아기 한 겹 추가 노트
+  const isBaby = babyAge === "infant" || babyAge === "toddler";
+  const babyNote = isBaby ? " · 아기는 한 겹 더" : "";
+  if (feels >= 28) return [
+    { ico: "👕", text: "민소매·반팔" + babyNote },
+    { ico: "👖", text: "반바지" },
+    { ico: "🧦", text: "통풍 잘 되는 신발·샌들" }
+  ];
+  if (feels >= 23) return [
+    { ico: "👕", text: "반팔" + babyNote },
+    { ico: "👖", text: "얇은 긴바지·반바지" },
+    { ico: "🧦", text: "얇은 양말, 운동화 또는 샌들" }
+  ];
+  if (feels >= 20) return [
+    { ico: "👕", text: "얇은 긴팔 + 가디건" + babyNote },
+    { ico: "👖", text: "긴바지" },
+    { ico: "🧦", text: "양말 + 운동화" }
+  ];
+  if (feels >= 17) return [
+    { ico: "👕", text: "긴팔 + 카디건" + babyNote },
+    { ico: "👖", text: "긴바지" },
+    { ico: "🧦", text: isBaby ? "양말 + 얇은 겉옷" : "양말 + 운동화" }
+  ];
+  if (feels >= 12) return [
+    { ico: "🧥", text: "얇은 자켓" + babyNote },
+    { ico: "👖", text: "긴바지" },
+    { ico: "🧦", text: isBaby ? "도톰한 겉옷 + 양말" : "양말 + 운동화" }
+  ];
+  if (feels >= 9) return [
+    { ico: "🧥", text: "자켓·니트" + babyNote },
+    { ico: "👖", text: "긴바지" },
+    { ico: "🧦", text: isBaby ? "패딩 조끼 + 양말 필수" : "양말 필수" }
+  ];
+  if (feels >= 5) return [
+    { ico: "🧥", text: "코트·트렌치" + babyNote },
+    { ico: "👖", text: "따뜻한 긴바지" },
+    { ico: "🧦", text: "두툼한 양말, 장갑 권장" }
+  ];
+  return [
+    { ico: "🧥", text: "두꺼운 패딩" + babyNote },
+    { ico: "🧣", text: "목도리 + 모자" },
+    { ico: "🧤", text: isBaby ? "내복 + 기모양말 + 장갑" : "장갑" }
+  ];
+}
+
+function outfitExtras(weather, babyAge) {
+  const alerts = [];
+  const items = [];
+  const feels = weather.feels;
+  const rain = weather.rainProbMax;
+  const pm10 = weather.pm10;
+  const pm10Grade = weather.pm10Grade;
+  const wind = weather.windSpeed;
+  const tMin = weather.tempMin, tMax = weather.tempMax;
+  const month = new Date().getMonth() + 1;
+  const isBaby = babyAge === "infant" || babyAge === "toddler";
+  const isInfant = babyAge === "infant";
+
+  // 🔴 빨간 alert
+  if (rain >= 60) alerts.push("☂️ 우산");
+  if (rain >= 30 && isBaby) alerts.push("🛺 유모차 방수커버");
+  if (pm10Grade === "나쁨" || pm10Grade === "매우나쁨") alerts.push("😷 마스크");
+  if (pm10Grade === "매우나쁨") alerts.push("⚠️ 외출 자제 권고");
+  if (feels >= 33) alerts.push("🥵 폭염 외출 자제");
+  if (feels <= -5) alerts.push("🥶 한파 외출 자제");
+  if (wind >= 10 && isBaby) alerts.push("🛺 유모차 방풍커버");
+
+  // 🟡 일반
+  if (feels >= 18) items.push("🧢 모자");
+  if (feels >= 18) items.push("🧴 자외선차단제");
+  if (feels >= 25) items.push("🕶 선글라스");
+  if (feels >= 25) items.push("💧 물병");
+  if (feels >= 28) items.push("🌬 휴대용 손풍기");
+  if (feels >= 28) items.push("🧻 거즈 손수건");
+  // 모기 시즌 (5~10월)
+  if (month >= 5 && month <= 10 && feels >= 18) {
+    items.push("🦟 모기퇴치제");
+    if (isBaby) items.push("🩹 모기패치");
+  }
+  // 일교차
+  if (tMin != null && tMax != null && tMax - tMin >= 10) {
+    items.push("🧥 얇은 겉옷 (저녁 대비)");
+  }
+  if (rain >= 30 && rain < 60) items.push("☂️ 우산 (대비)");
+  // 영아 동행
+  if (isInfant) {
+    items.push("🍼 분유·물");
+    items.push("👶 여벌옷");
+  }
+
+  return { alerts, items };
+}
+
+function parentTips(weather, babyAge) {
+  const tips = [];
+  const rain = weather.rainProbMax;
+  const pm10Grade = weather.pm10Grade;
+  const feels = weather.feels;
+  const wind = weather.windSpeed;
+
+  if (rain >= 60) {
+    tips.push({ emoji: "☔️", text: `<b>비 예보</b> · 종일 강수확률 ${rain}%. <a href="#" onclick="event.preventDefault(); jumpToTab('비오는날')">[비오는날] 탭</a>에서 실내 위주로 추천해드릴게요.`, danger: false });
+  }
+  if (pm10Grade === "나쁨" || pm10Grade === "매우나쁨") {
+    tips.push({ emoji: "😷", text: `<b>미세먼지 ${pm10Grade}</b> · 마스크 착용하시고, 실내 장소 위주로 다녀오세요.`, danger: pm10Grade === "매우나쁨" });
+  }
+  if (feels >= 33) {
+    tips.push({ emoji: "🥵", text: `<b>폭염</b> · 한낮 외출은 자제하시고, 새벽이나 저녁 시간대 추천. 수분 충분히.`, danger: true });
+  }
+  if (feels <= -5) {
+    tips.push({ emoji: "🥶", text: `<b>한파</b> · 외출 시 한 겹 더 입히시고, 노출 시간 짧게 가져가세요.`, danger: true });
+  }
+  if (wind >= 10 && tips.length === 0) {
+    tips.push({ emoji: "💨", text: `<b>강풍 ${Math.round(wind)}m/s</b> · 유모차 방풍커버 권장. 해안가 외출은 주의.`, danger: false });
+  }
+  return tips;
+}
+
+function jumpToTab(viewName) {
+  state.view = viewName;
+  state.age = null;
+  state.tags = [];
+  renderAll();
+  document.querySelector(".tabs-wrap")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// =================== 날씨 렌더링 ===================
+function renderWeather(data) {
+  if (!data || !data.daily?.length) return;
+  const babyAge = getBabyAge();
+  const today = data.daily[0];
+  const hours = data.hourly || [];
+
+  // 오늘 시간별에서 현재값 추출
+  const nowKey = currentHourKey();
+  const nowH = hours.find(h => h.date + h.time >= nowKey) || hours[0] || {};
+  const tmp = nowH.TMP ? parseFloat(nowH.TMP) : (today.tempMax + today.tempMin) / 2;
+  const reh = nowH.REH ? parseInt(nowH.REH) : null;
+  const wsd = nowH.WSD ? parseFloat(nowH.WSD) : null;
+  const vec = nowH.VEC;
+  const sky = nowH.SKY;
+  const pty = nowH.PTY;
+  const feels = Math.round(feelsLike(tmp, reh, wsd));
+
+  // 옷차림용 weather 객체
+  const weatherCtx = {
+    feels,
+    rainProbMax: today.rainProbMax || 0,
+    pm10: data.air?.pm10,
+    pm10Grade: data.air?.pm10Grade,
+    windSpeed: wsd,
+    tempMin: today.tempMin,
+    tempMax: today.tempMax
+  };
+
+  const clothes = outfitClothes(feels, babyAge);
+  const { alerts, items } = outfitExtras(weatherCtx, babyAge);
+  const tips = parentTips(weatherCtx, babyAge);
+
+  const winddir = vec ? compass(parseFloat(vec)) : "";
+  const region = data.region?.name || "제주시";
+  const now = new Date();
+  const todayLabel = `${now.getMonth()+1}월 ${now.getDate()}일 (${["일","월","화","수","목","금","토"][now.getDay()]}) · ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")} 발표`;
+
+  const html = `
+    <div class="today-card">
+      <div class="today-head">
+        <div class="today-region">📍 ${region}</div>
+        <div class="today-date">${todayLabel}</div>
+      </div>
+      <div class="today-main">
+        <div class="today-icon">${skyIcon(sky, pty, new Date().getHours())}</div>
+        <div>
+          <div class="today-temp">
+            <span class="high">${Math.round(today.tempMax)}°</span><span class="sep">/</span><span class="low">${Math.round(today.tempMin)}°</span>
+          </div>
+          <div class="today-desc">${skyDesc(sky, pty)} · 체감 ${feels}°</div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">강수확률</div><div class="metric-value ${today.rainProbMax >= 60 ? "bad" : today.rainProbMax >= 30 ? "warn" : "good"}">${today.rainProbMax}%</div></div>
+        <div class="metric"><div class="metric-label">습도</div><div class="metric-value">${reh ?? "-"}%</div></div>
+        <div class="metric"><div class="metric-label">바람</div><div class="metric-value">${winddir} ${wsd != null ? wsd.toFixed(1) : "-"}m/s</div></div>
+        <div class="metric"><div class="metric-label">미세먼지</div><div class="metric-value ${airClass(data.air?.pm10Grade)}">${data.air?.pm10Grade ?? "-"}${data.air?.pm10 ? " (" + data.air.pm10 + ")" : ""}</div></div>
+        <div class="metric"><div class="metric-label">초미세</div><div class="metric-value ${airClass(data.air?.pm25Grade)}">${data.air?.pm25Grade ?? "-"}${data.air?.pm25 ? " (" + data.air.pm25 + ")" : ""}</div></div>
+        <div class="metric"><div class="metric-label">최고/최저</div><div class="metric-value">${Math.round(today.tempMax)}°/${Math.round(today.tempMin)}°</div></div>
+      </div>
+
+      <div class="outfit">
+        <div class="outfit-title">
+          <span>오늘의 옷차림 · 챙길거</span>
+          <span class="feels">체감 ${feels}°</span>
+        </div>
+        <div class="outfit-clothes">
+          ${clothes.map(c => `<div class="outfit-item"><span class="outfit-item-ico">${c.ico}</span>${c.text}</div>`).join("")}
+        </div>
+        ${(alerts.length || items.length) ? `
+          <div class="outfit-extras">
+            <div class="outfit-extras-head">📦 함께 챙기기</div>
+            <div class="outfit-extras-list">
+              ${alerts.map(a => `<span class="extra-chip alert">${a}</span>`).join("")}
+              ${items.map(i => `<span class="extra-chip">${i}</span>`).join("")}
+            </div>
+          </div>
+        ` : ""}
+
+        <div class="hourly-title">시간별</div>
+        <div class="hourly">
+          ${hours.slice(0, 12).map((h, idx) => {
+            const hh = parseInt(h.time?.slice(0, 2) || "0");
+            const label = idx === 0 ? "지금" : `${hh}시`;
+            return `
+              <div class="hour-slot">
+                <div class="hour-time">${label}</div>
+                <div class="hour-icon">${skyIcon(h.SKY, h.PTY, hh)}</div>
+                <div class="hour-temp">${h.TMP ? Math.round(parseFloat(h.TMP)) + "°" : "-"}</div>
+                <div class="hour-rain">${h.POP ?? 0}%</div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    </div>
+
+    <div class="weekly">
+      <div class="weekly-title">이번주 (${data.daily.length}일 예보)</div>
+      ${data.daily.map((d, i) => {
+        const { name, dow } = dayName(d.date);
+        const dowClass = dow === 0 ? "sun" : dow === 6 ? "sat" : "";
+        const ico = d.skyDescription ? midSkyIcon(d.skyDescription) : skyIcon(d.skySnapshot, d.ptySnapshot, 12);
+        return `
+          <div class="day-row ${i === 0 ? "today" : ""}">
+            <div class="day-name"><span class="${dowClass}">${name}</span></div>
+            <div class="day-icon">${ico}</div>
+            <div class="day-bar-wrap">
+              <div class="day-low">${d.tempMin != null ? Math.round(d.tempMin) + "°" : "-"}</div>
+              <div class="day-bar"></div>
+              <div class="day-high">${d.tempMax != null ? Math.round(d.tempMax) + "°" : "-"}</div>
+            </div>
+            <div class="day-rain">${d.rainProbMax || 0}%</div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+
+    ${tips.map(t => `
+      <div class="parent-tip ${t.danger ? "danger" : ""}">
+        <div class="parent-tip-emoji">${t.emoji}</div>
+        <div>${t.text}</div>
+      </div>
+    `).join("")}
+  `;
+
+  document.getElementById("weatherBody").innerHTML = html;
+}
+
+function currentHourKey() {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}${String(d.getDate()).padStart(2,"0")}${String(d.getHours()).padStart(2,"0")}00`;
+}
+function compass(deg) {
+  const dirs = ["북","북북동","북동","동북동","동","동남동","남동","남남동","남","남남서","남서","서남서","서","서북서","북서","북북서"];
+  return dirs[Math.round(deg / 22.5) % 16];
+}
+function airClass(g) {
+  if (g === "좋음") return "good";
+  if (g === "보통") return "";
+  if (g === "나쁨") return "warn";
+  if (g === "매우나쁨") return "bad";
+  return "";
+}
+
+// =================== 위치 기반 지역 자동 ===================
+function autoSelectRegion(userLat, userLng) {
+  if (!REGION_LIST.length) return;
+  // 가장 가까운 지역 찾기 (대략 좌표 매핑 — api/weather.js의 REGIONS와 같은 위경도 사용)
+  const coords = {
+    jejusi: [33.4996, 126.5312], seogwipo: [33.2541, 126.5601],
+    aewol: [33.4636, 126.3318], hallim: [33.4116, 126.2649],
+    seongsan: [33.4338, 126.9112], pyoseon: [33.3263, 126.8328],
+    jungmun: [33.2495, 126.4180], hallasan: [33.3617, 126.5292]
+  };
+  let best = "jejusi", bestD = Infinity;
+  for (const [k, [la, ln]] of Object.entries(coords)) {
+    const d = distanceKm(userLat, userLng, la, ln);
+    if (d < bestD) { bestD = d; best = k; }
+  }
+  if (best !== WEATHER_REGION) {
+    WEATHER_REGION = best;
+    localStorage.setItem("weatherRegion", best);
+    renderRegionTabs();
+    loadWeather(true);
+  }
+}
+
+// =================== 초기화 ===================
+renderBabyChips();
+renderRegionTabs();
+loadWeather();
 
 load();
 </script>

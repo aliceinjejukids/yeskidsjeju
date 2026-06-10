@@ -20,13 +20,35 @@ export default async function handler(req, res) {
   const regionKey = req.query.region || "jejusi";
   const region = REGIONS[regionKey] || REGIONS.jejusi;
 
+  const isDebug = req.query.debug === "1";
+
   try {
-    const [hourly, midLand, midTemp, air] = await Promise.all([
+    const [hourlyR, midLandR, midTempR, airR] = await Promise.allSettled([
       fetchShortForecast(KEY, region.nx, region.ny),
       fetchMidLand(KEY, region.midLand),
       fetchMidTemp(KEY, region.midTemp),
       fetchAirQuality(KEY)
     ]);
+
+    if (isDebug) {
+      return res.status(200).json({
+        keyLength: KEY.length,
+        keyPreview: KEY.slice(0, 6) + "..." + KEY.slice(-4),
+        region,
+        baseTime: getShortBaseTime(),
+        midBaseTime: getMidBaseTime(),
+        shortForecast: hourlyR.status === "fulfilled" ? { ok: true, count: hourlyR.value.length, first: hourlyR.value[0] } : { error: hourlyR.reason?.message || String(hourlyR.reason) },
+        midLand: midLandR.status === "fulfilled" ? { ok: true, value: midLandR.value } : { error: midLandR.reason?.message || String(midLandR.reason) },
+        midTemp: midTempR.status === "fulfilled" ? { ok: true, value: midTempR.value } : { error: midTempR.reason?.message || String(midTempR.reason) },
+        air: airR.status === "fulfilled" ? { ok: true, value: airR.value } : { error: airR.reason?.message || String(airR.reason) }
+      });
+    }
+
+    if (hourlyR.status !== "fulfilled") throw hourlyR.reason;
+    const hourly = hourlyR.value;
+    const midLand = midLandR.status === "fulfilled" ? midLandR.value : null;
+    const midTemp = midTempR.status === "fulfilled" ? midTempR.value : null;
+    const air = airR.status === "fulfilled" ? airR.value : null;
 
     const result = {
       region: { key: regionKey, ...region },
@@ -61,8 +83,13 @@ async function fetchShortForecast(key, nx, ny) {
   });
   const url = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?${params}`;
   const r = await fetch(url);
-  if (!r.ok) throw new Error(`단기예보 ${r.status}`);
-  const j = await r.json();
+  const text = await r.text();
+  if (!r.ok) throw new Error(`단기예보 HTTP ${r.status}: ${text.slice(0, 200)}`);
+  let j;
+  try { j = JSON.parse(text); }
+  catch (_) { throw new Error(`단기예보 응답 파싱 실패: ${text.slice(0, 200)}`); }
+  const code = j.response?.header?.resultCode;
+  if (code && code !== "00") throw new Error(`단기예보 ${code} ${j.response.header.resultMsg}`);
   const items = j.response?.body?.items?.item || [];
 
   // 시간별로 묶기

@@ -276,6 +276,30 @@
     padding: 30px; text-align: center; color: var(--text-sub); font-size: 13px;
   }
 
+  /* 날씨 상세 토글 */
+  .weather-more-btn {
+    width: 100%;
+    padding: 10px 14px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: white;
+    font-size: 12.5px;
+    color: var(--text-sub);
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .weather-more-btn:hover { border-color: var(--primary); color: var(--text); }
+  .weather-more-btn .arrow { transition: transform 0.2s; font-size: 11px; }
+  .weather-more-btn.open .arrow { transform: rotate(180deg); }
+  .weather-details { display: none; margin-top: 12px; }
+  .weather-details.open { display: block; }
+
   /* 위치 정렬 토글 */
   .location-row {
     padding: 14px 20px 0;
@@ -497,7 +521,8 @@
   </header>
 
   <div class="intro">
-    오늘 제주에서 아기와 뭐할지 고민하는 양육자를 위한 큐레이션입니다.
+    오늘 제주에서 아기와 뭐할지 고민하는 양육자를 위한 큐레이션입니다.<br>
+    <span style="color:#B33A1E;">⚠️ 방문 전 공식SNS 또는 지도 페이지를 통해 휴무일, 영업시간 등을 꼭 확인하세요.</span>
   </div>
 
   <!-- 아기 월령 -->
@@ -764,17 +789,54 @@ function renderTabs() {
   });
 }
 
-// PC에서 마우스 휠을 가로 스크롤로 변환 (모바일은 터치 스와이프로 동작)
+// PC에서 마우스 휠/드래그를 가로 스크롤로 변환 (모바일은 터치 스와이프로 동작)
 function enableHorizontalScroll() {
-  document.querySelectorAll(".tabs, .chips").forEach(el => {
+  document.querySelectorAll(".tabs, .chips, .region-tabs, .baby-chips, .hourly").forEach(el => {
     if (el.dataset.wheelBound) return;
     el.dataset.wheelBound = "1";
+
+    // 휠 → 가로 스크롤 (스크롤 가능할 때만 가로채기)
     el.addEventListener("wheel", (e) => {
+      const canScrollX = el.scrollWidth > el.clientWidth;
+      if (!canScrollX) return;
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         e.preventDefault();
         el.scrollLeft += e.deltaY;
       }
     }, { passive: false });
+
+    // 마우스 드래그 → 가로 스크롤 (PC)
+    let isDown = false, startX = 0, startScroll = 0, moved = 0;
+    el.addEventListener("mousedown", (e) => {
+      // 버튼 클릭은 방해하지 않게 — 드래그 시작만 기록
+      isDown = true;
+      moved = 0;
+      startX = e.pageX;
+      startScroll = el.scrollLeft;
+      el.style.cursor = "grabbing";
+    });
+    const endDrag = () => {
+      isDown = false;
+      el.style.cursor = "";
+    };
+    el.addEventListener("mouseleave", endDrag);
+    el.addEventListener("mouseup", endDrag);
+    el.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      const dx = e.pageX - startX;
+      moved = Math.abs(dx);
+      if (moved > 4) {
+        e.preventDefault();
+        el.scrollLeft = startScroll - dx;
+      }
+    });
+    // 드래그 직후 클릭 막기 (5px 이상 움직였을 때만)
+    el.addEventListener("click", (e) => {
+      if (moved > 5) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
   });
 }
 
@@ -936,6 +998,7 @@ function renderBabyChips() {
     <button class="baby-chip ${cur === b.key ? "active" : ""}" data-key="${b.key}">${b.label}</button>
   `).join("");
   el.querySelectorAll(".baby-chip").forEach(c => c.onclick = () => setBabyAge(c.dataset.key));
+  enableHorizontalScroll();
 }
 
 // =================== 날씨 데이터 ===================
@@ -984,6 +1047,7 @@ function renderRegionTabs() {
     </button>
   `).join("");
   el.querySelectorAll(".region-tab").forEach(t => t.onclick = () => changeRegion(t.dataset.key));
+  enableHorizontalScroll();
 }
 
 // =================== 날씨 → 아이콘/문구 ===================
@@ -1211,6 +1275,8 @@ function renderWeather(data) {
   const now = new Date();
   const todayLabel = `${now.getMonth()+1}월 ${now.getDate()}일 (${["일","월","화","수","목","금","토"][now.getDay()]}) · ${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")} 발표`;
 
+  const isOpen = localStorage.getItem("weatherDetailsOpen") === "1";
+
   const html = `
     <div class="today-card">
       <div class="today-head">
@@ -1234,73 +1300,97 @@ function renderWeather(data) {
         <div class="metric"><div class="metric-label">초미세</div><div class="metric-value ${airClass(data.air?.pm25Grade)}">${data.air?.pm25Grade ?? "-"}${data.air?.pm25 ? " (" + data.air.pm25 + ")" : ""}</div></div>
         <div class="metric"><div class="metric-label">최고/최저</div><div class="metric-value">${Math.round(today.tempMax)}°/${Math.round(today.tempMin)}°</div></div>
       </div>
+    </div>
 
-      <div class="outfit">
-        <div class="outfit-title">
-          <span>오늘의 옷차림 · 챙길거</span>
-          <span class="feels">체감 ${feels}°</span>
-        </div>
-        <div class="outfit-clothes">
-          ${clothes.map(c => `<div class="outfit-item"><span class="outfit-item-ico">${c.ico}</span>${c.text}</div>`).join("")}
-        </div>
-        ${(alerts.length || items.length) ? `
-          <div class="outfit-extras">
-            <div class="outfit-extras-head">📦 함께 챙기기</div>
-            <div class="outfit-extras-list">
-              ${alerts.map(a => `<span class="extra-chip alert">${a}</span>`).join("")}
-              ${items.map(i => `<span class="extra-chip">${i}</span>`).join("")}
-            </div>
+    <button class="weather-more-btn ${isOpen ? "open" : ""}" id="weatherMoreBtn" onclick="toggleWeatherDetails()">
+      <span class="label">${isOpen ? "상세 정보 접기" : "옷차림 · 시간별 · 주간예보 더보기"}</span>
+      <span class="arrow">▾</span>
+    </button>
+
+    <div class="weather-details ${isOpen ? "open" : ""}" id="weatherDetails">
+      <div class="today-card" style="margin-top:0;">
+        <div class="outfit" style="margin-top:0; padding-top:0; border-top:none;">
+          <div class="outfit-title">
+            <span>오늘의 옷차림 · 챙길거</span>
+            <span class="feels">체감 ${feels}°</span>
           </div>
-        ` : ""}
-
-        <div class="hourly-title">시간별</div>
-        <div class="hourly">
-          ${hours.slice(0, 12).map((h, idx) => {
-            const hh = parseInt(h.time?.slice(0, 2) || "0");
-            const label = idx === 0 ? "지금" : `${hh}시`;
-            return `
-              <div class="hour-slot">
-                <div class="hour-time">${label}</div>
-                <div class="hour-icon">${skyIcon(h.SKY, h.PTY, hh)}</div>
-                <div class="hour-temp">${h.TMP ? Math.round(parseFloat(h.TMP)) + "°" : "-"}</div>
-                <div class="hour-rain">${h.POP ?? 0}%</div>
+          <div class="outfit-clothes">
+            ${clothes.map(c => `<div class="outfit-item"><span class="outfit-item-ico">${c.ico}</span>${c.text}</div>`).join("")}
+          </div>
+          ${(alerts.length || items.length) ? `
+            <div class="outfit-extras">
+              <div class="outfit-extras-head">📦 함께 챙기기</div>
+              <div class="outfit-extras-list">
+                ${alerts.map(a => `<span class="extra-chip alert">${a}</span>`).join("")}
+                ${items.map(i => `<span class="extra-chip">${i}</span>`).join("")}
               </div>
-            `;
-          }).join("")}
+            </div>
+          ` : ""}
+
+          <div class="hourly-title">시간별</div>
+          <div class="hourly">
+            ${hours.slice(0, 12).map((h, idx) => {
+              const hh = parseInt(h.time?.slice(0, 2) || "0");
+              const label = idx === 0 ? "지금" : `${hh}시`;
+              return `
+                <div class="hour-slot">
+                  <div class="hour-time">${label}</div>
+                  <div class="hour-icon">${skyIcon(h.SKY, h.PTY, hh)}</div>
+                  <div class="hour-temp">${h.TMP ? Math.round(parseFloat(h.TMP)) + "°" : "-"}</div>
+                  <div class="hour-rain">${h.POP ?? 0}%</div>
+                </div>
+              `;
+            }).join("")}
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="weekly">
-      <div class="weekly-title">이번주 (${data.daily.length}일 예보)</div>
-      ${data.daily.map((d, i) => {
-        const { name, dow } = dayName(d.date);
-        const dowClass = dow === 0 ? "sun" : dow === 6 ? "sat" : "";
-        const ico = d.skyDescription ? midSkyIcon(d.skyDescription) : skyIcon(d.skySnapshot, d.ptySnapshot, 12);
-        return `
-          <div class="day-row ${i === 0 ? "today" : ""}">
-            <div class="day-name"><span class="${dowClass}">${name}</span></div>
-            <div class="day-icon">${ico}</div>
-            <div class="day-bar-wrap">
-              <div class="day-low">${d.tempMin != null ? Math.round(d.tempMin) + "°" : "-"}</div>
-              <div class="day-bar"></div>
-              <div class="day-high">${d.tempMax != null ? Math.round(d.tempMax) + "°" : "-"}</div>
+      <div class="weekly">
+        <div class="weekly-title">이번주 (${data.daily.length}일 예보)</div>
+        ${data.daily.map((d, i) => {
+          const { name, dow } = dayName(d.date);
+          const dowClass = dow === 0 ? "sun" : dow === 6 ? "sat" : "";
+          const ico = d.skyDescription ? midSkyIcon(d.skyDescription) : skyIcon(d.skySnapshot, d.ptySnapshot, 12);
+          return `
+            <div class="day-row ${i === 0 ? "today" : ""}">
+              <div class="day-name"><span class="${dowClass}">${name}</span></div>
+              <div class="day-icon">${ico}</div>
+              <div class="day-bar-wrap">
+                <div class="day-low">${d.tempMin != null ? Math.round(d.tempMin) + "°" : "-"}</div>
+                <div class="day-bar"></div>
+                <div class="day-high">${d.tempMax != null ? Math.round(d.tempMax) + "°" : "-"}</div>
+              </div>
+              <div class="day-rain">${d.rainProbMax || 0}%</div>
             </div>
-            <div class="day-rain">${d.rainProbMax || 0}%</div>
-          </div>
-        `;
-      }).join("")}
-    </div>
-
-    ${tips.map(t => `
-      <div class="parent-tip ${t.danger ? "danger" : ""}">
-        <div class="parent-tip-emoji">${t.emoji}</div>
-        <div>${t.text}</div>
+          `;
+        }).join("")}
       </div>
-    `).join("")}
+
+      ${tips.map(t => `
+        <div class="parent-tip ${t.danger ? "danger" : ""}">
+          <div class="parent-tip-emoji">${t.emoji}</div>
+          <div>${t.text}</div>
+        </div>
+      `).join("")}
+    </div>
   `;
 
   document.getElementById("weatherBody").innerHTML = html;
+  enableHorizontalScroll();
+}
+
+function toggleWeatherDetails() {
+  const details = document.getElementById("weatherDetails");
+  const btn = document.getElementById("weatherMoreBtn");
+  if (!details || !btn) return;
+  const willOpen = !details.classList.contains("open");
+  details.classList.toggle("open", willOpen);
+  btn.classList.toggle("open", willOpen);
+  const label = btn.querySelector(".label");
+  if (label) label.textContent = willOpen ? "상세 정보 접기" : "옷차림 · 시간별 · 주간예보 더보기";
+  localStorage.setItem("weatherDetailsOpen", willOpen ? "1" : "0");
+  // 열릴 때 hourly 가로스크롤 바인딩
+  if (willOpen) enableHorizontalScroll();
 }
 
 function currentHourKey() {

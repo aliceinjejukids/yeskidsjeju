@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -97,6 +98,54 @@
     color: white;
     border-color: var(--primary);
     font-weight: 600;
+  }
+
+  /* 위치 정렬 토글 */
+  .location-row {
+    padding: 14px 20px 0;
+  }
+  .location-btn {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: white;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .location-btn:hover { border-color: var(--primary); }
+  .location-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    font-weight: 600;
+  }
+  .location-hint {
+    font-size: 11px;
+    color: var(--text-sub);
+    text-align: center;
+    margin-top: 6px;
+  }
+
+  /* 카드 거리 배지 */
+  .dist-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--primary-soft);
+    color: #8A4A1F;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    margin-left: 6px;
   }
 
   .sub-filter { padding: 14px 20px 4px; }
@@ -282,6 +331,13 @@
 
   <div class="view-desc" id="viewDesc"></div>
 
+  <div class="location-row">
+    <button class="location-btn" id="locationBtn" onclick="toggleDistanceSort()">
+      📍 내 위치 기준 가까운 순으로 보기
+    </button>
+    <div class="location-hint" id="locationHint"></div>
+  </div>
+
   <div class="sub-filter">
     <div class="sub-filter-label">아기 나이</div>
     <div class="chips" id="ageChips"></div>
@@ -321,7 +377,65 @@
 <script>
 let PLACES = [];
 
-let state = { view: "비오는날", age: null, tags: [] };
+let state = { view: "비오는날", age: null, tags: [], userLocation: null, sortByDistance: false };
+
+// Haversine 공식 (두 좌표 사이 직선거리, km)
+function distanceKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function getDistance(p) {
+  if (!state.userLocation) return null;
+  const lat = parseFloat(p["위도"]);
+  const lng = parseFloat(p["경도"]);
+  if (!lat || !lng || isNaN(lat) || isNaN(lng)) return null;
+  return distanceKm(state.userLocation.lat, state.userLocation.lng, lat, lng);
+}
+
+function formatDistance(d) {
+  if (d == null) return "";
+  if (d < 1) return Math.round(d * 1000) + "m";
+  if (d < 10) return d.toFixed(1) + "km";
+  return Math.round(d) + "km";
+}
+
+function toggleDistanceSort() {
+  if (state.sortByDistance) {
+    state.sortByDistance = false;
+    renderAll();
+    return;
+  }
+  if (state.userLocation) {
+    state.sortByDistance = true;
+    renderAll();
+    return;
+  }
+  // 위치 권한 요청
+  if (!navigator.geolocation) {
+    document.getElementById("locationHint").textContent = "이 브라우저는 위치 기능을 지원하지 않아요.";
+    return;
+  }
+  document.getElementById("locationHint").textContent = "위치 권한을 확인해주세요…";
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      state.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      state.sortByDistance = true;
+      renderAll();
+    },
+    err => {
+      const msg = err.code === 1
+        ? "위치 권한이 거부됐어요. 브라우저 주소창 좌측 자물쇠에서 허용해주세요."
+        : "위치 정보를 가져올 수 없어요. 잠시 후 다시 시도해주세요.";
+      document.getElementById("locationHint").textContent = msg;
+    },
+    { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 }
+  );
+}
 
 const AGE_GROUPS = ["0-12개월", "13-24개월", "2-3세", "4-6세", "7세+"];
 const TAG_PRIORITY = ["놀이터", "실내놀이", "실외놀이", "수유실", "기저귀교환대", "유아의자", "유아메뉴", "유모차접근", "주차", "동물체험", "산책", "바다"];
@@ -521,7 +635,11 @@ function matchPlace(p) {
 function renderList() {
   const view = getCurrentView();
   const filtered = PLACES.filter(matchPlace);
-  if (view && typeof view.sort === "function") filtered.sort(view.sort);
+  if (state.sortByDistance && state.userLocation) {
+    filtered.sort((a, b) => (getDistance(a) ?? Infinity) - (getDistance(b) ?? Infinity));
+  } else if (view && typeof view.sort === "function") {
+    filtered.sort(view.sort);
+  }
   document.getElementById("count").textContent = filtered.length;
   const list = document.getElementById("list");
   if (filtered.length === 0) {
@@ -536,12 +654,14 @@ function renderList() {
     const ig = p["IG/Homepage"];
     const weather = (p["날씨적합"] || "").split("/").map(s => s.trim()).filter(Boolean).join(" ");
     const season = p["시즌이벤트"];
+    const dist = getDistance(p);
+    const distBadge = dist != null ? `<span class="dist-badge">📍 ${formatDistance(dist)}</span>` : "";
 
     return `
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="card-name">${p["이름"]}</div>
+            <div class="card-name">${p["이름"]}${distBadge}</div>
             <div class="card-cat">${p["카테고리"] || ""}${p["실내외"] ? " · " + p["실내외"] : ""}</div>
           </div>
           <div class="price">${p["가격대"] || ""}</div>
@@ -570,8 +690,24 @@ function renderAll() {
   renderTabs();
   document.getElementById("viewDesc").textContent = getCurrentView().desc;
   buildSubFilters();
+  renderLocationButton();
   renderList();
   enableHorizontalScroll();
+}
+
+function renderLocationButton() {
+  const btn = document.getElementById("locationBtn");
+  const hint = document.getElementById("locationHint");
+  if (!btn) return;
+  if (state.sortByDistance && state.userLocation) {
+    btn.classList.add("active");
+    btn.textContent = "📍 가까운 순으로 보고 있어요 (해제하기)";
+    hint.textContent = "";
+  } else {
+    btn.classList.remove("active");
+    btn.textContent = "📍 내 위치 기준 가까운 순으로 보기";
+    if (!state.userLocation) hint.textContent = "";
+  }
 }
 
 function resetSubFilters() {

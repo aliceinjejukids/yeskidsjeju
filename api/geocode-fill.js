@@ -58,8 +58,8 @@ export default async function handler(req, res) {
       }
 
       const coords = await geocode(address, KAKAO_KEY);
-      if (!coords) {
-        results.failed.push({ name, address, reason: "카카오 검색 실패" });
+      if (!coords || !coords.lat) {
+        results.failed.push({ name, address, reason: "카카오 검색 실패", debug: coords });
         continue;
       }
 
@@ -87,25 +87,34 @@ export default async function handler(req, res) {
   }
 }
 
-// 카카오 주소→좌표 변환
+// 카카오 주소→좌표 변환 (디버그 정보 포함)
 async function geocode(address, apiKey) {
+  const debug = { tried: [] };
   // 1차: 주소 검색
-  const url = `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(address)}`;
-  let r = await fetch(url, { headers: { Authorization: `KakaoAK ${apiKey}` } });
+  const url1 = `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(address)}`;
+  let r = await fetch(url1, { headers: { Authorization: `KakaoAK ${apiKey}` } });
+  const body1 = await r.text();
+  debug.tried.push({ api: "address", status: r.status, body: body1.slice(0, 300) });
   if (r.ok) {
-    const d = await r.json();
-    const f = d.documents?.[0];
-    if (f) return { lat: parseFloat(f.y), lng: parseFloat(f.x) };
+    try {
+      const d = JSON.parse(body1);
+      const f = d.documents?.[0];
+      if (f) return { lat: parseFloat(f.y), lng: parseFloat(f.x), debug };
+    } catch (_) {}
   }
   // 2차 fallback: 키워드 검색
   const url2 = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(address)}`;
   r = await fetch(url2, { headers: { Authorization: `KakaoAK ${apiKey}` } });
+  const body2 = await r.text();
+  debug.tried.push({ api: "keyword", status: r.status, body: body2.slice(0, 300) });
   if (r.ok) {
-    const d = await r.json();
-    const f = d.documents?.[0];
-    if (f) return { lat: parseFloat(f.y), lng: parseFloat(f.x) };
+    try {
+      const d = JSON.parse(body2);
+      const f = d.documents?.[0];
+      if (f) return { lat: parseFloat(f.y), lng: parseFloat(f.x), debug };
+    } catch (_) {}
   }
-  return null;
+  return debug;
 }
 
 // 노션 페이지에 위경도 PATCH

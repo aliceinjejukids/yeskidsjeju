@@ -54,8 +54,7 @@
   .container { max-width: 480px; margin: 0 auto; background: var(--bg); min-height: 100vh; padding-bottom: 40px; }
 
   header { padding: 20px 20px 14px; }
-  .logo { font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; display: flex; align-items: center; }
-  .logo img { height: 36px; width: auto; display: block; }
+  .logo { font-size: 30px; font-weight: 800; color: var(--primary); letter-spacing: -0.5px; }
   .tagline { font-size: 13px; color: var(--text-sub); margin-top: 2px; }
   .intro {
     margin: 12px 20px 16px;
@@ -467,6 +466,13 @@
     text-align: center; padding: 30px 20px 10px;
     font-size: 11px; color: var(--text-sub);
   }
+  .footer-logo {
+    display: block;
+    margin: 0 auto 12px;
+    height: 56px;
+    width: auto;
+    opacity: 0.9;
+  }
 
   /* Support card */
   .support {
@@ -518,7 +524,7 @@
 <body>
 <div class="container">
   <header>
-    <div class="logo"><img src="/logo.png" alt="YesKidsJeju"></div>
+    <div class="logo">🍊 YesKidsJeju</div>
     <div class="tagline">제주 양육자를 위한 키즈 친화 장소 가이드</div>
   </header>
 
@@ -589,6 +595,7 @@
   </section>
 
   <footer>
+    <img class="footer-logo" src="/logo.png" alt="YesKidsJeju">
     🍊 YesKidsJeju · 데이터는 Notion으로 관리됩니다<br>
     응원/제보: alice.in.jejukids@gmail.com
   </footer>

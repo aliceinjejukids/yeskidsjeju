@@ -13,8 +13,19 @@ const REGIONS = {
   hallasan: { name: "한라산",   nx: 51, ny: 35, lat: 33.3617, lng: 126.5292, midLand: "11G00201", midTemp: "11G10201" }
 };
 
+// 환경변수의 키가 이미 URL 인코딩된 경우 자동 디코딩 (이중 인코딩 방지)
+function normalizeKey(raw) {
+  if (!raw) return "";
+  const trimmed = raw.trim();
+  // %XX 패턴이 있으면 디코딩 시도
+  if (/%[0-9A-Fa-f]{2}/.test(trimmed)) {
+    try { return decodeURIComponent(trimmed); } catch (_) { return trimmed; }
+  }
+  return trimmed;
+}
+
 export default async function handler(req, res) {
-  const KEY = process.env.WEATHER_API_KEY;
+  const KEY = normalizeKey(process.env.WEATHER_API_KEY);
   if (!KEY) return res.status(500).json({ error: "WEATHER_API_KEY 환경변수가 없어요" });
 
   const regionKey = req.query.region || "jejusi";

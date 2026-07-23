@@ -70,7 +70,10 @@ async function nearestPOI(p, key) {
         address: best.road_address_name || best.address_name,
         lat: parseFloat(best.y),
         lng: parseFloat(best.x),
-        distance: Number(best.distance)
+        distance: Number(best.distance),
+        kakao_id: best.id,              // 카카오 장소 ID → place.map.kakao.com/{id}
+        place_url: best.place_url,      // 카카오맵 정확한 URL
+        phone: best.phone || ""
       };
     }
   }

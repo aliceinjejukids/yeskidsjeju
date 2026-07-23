@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -301,6 +302,39 @@
   .weather-details { display: none; margin-top: 12px; }
   .weather-details.open { display: block; }
 
+  .festival-section { margin: 0 16px 18px; background: #E9F2FD; border: 1px solid #D2E3F7; border-radius: 16px; padding: 14px 16px 16px; }
+  .festival-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .festival-head h2 { font-size: 15px; font-weight: 800; color: #17356E; margin: 0; }
+  .festival-head .fest-count { font-size: 11px; color: #6E86AD; margin-left: auto; }
+  .fest-group-label { font-size: 11px; font-weight: 700; color: #2B6BE0; margin: 12px 0 0; }
+  .fest-row { display: flex; gap: 12px; padding: 11px 2px; border-top: 1px solid #D2E3F7; align-items: center; color: #1E3A6E; text-decoration: none; }
+  a.fest-row:active { background: #DCE9FB; }
+  .fest-date { flex: 0 0 50px; text-align: center; }
+  .fest-date .d { font-size: 18px; font-weight: 800; line-height: 1.05; color: #17356E; }
+  .fest-date .d small { font-size: 11px; font-weight: 600; }
+  .fest-date .m { font-size: 10.5px; color: #6E86AD; margin-top: 1px; }
+  .fest-info { flex: 1; min-width: 0; }
+  .fest-name { font-size: 14px; font-weight: 600; color: #1E3A6E; }
+  .fest-meta { font-size: 11.5px; color: #6E86AD; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fest-badge { flex: 0 0 auto; font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+  .fest-badge.ing { background: #2B6BE0; color: #FFFFFF; }
+  .fest-badge.soon { background: #DCE9FB; color: #1D57B8; }
+  .fest-badge.upcoming { background: #EAF1FA; color: #6E86AD; }
+
+  .waterspot-section { margin: 0 16px 18px; background: #E9F2FD; border: 1px solid #D2E3F7; border-radius: 16px; padding: 14px 16px 16px; }
+  .waterspot-head { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+  .waterspot-head h2 { font-size: 15px; font-weight: 800; color: #17356E; margin: 0; }
+  .waterspot-head .fest-count { font-size: 11px; color: #6E86AD; margin-left: auto; }
+  .spot-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+  .spot-scroll::-webkit-scrollbar { display: none; }
+  .spot-card { flex: 0 0 156px; background: #FFF; border: 1px solid #D2E3F7; border-radius: 12px; padding: 12px; color: #1E3A6E; text-decoration: none; }
+  .spot-type { font-size: 10.5px; font-weight: 700; color: #2B6BE0; }
+  .spot-name { font-size: 13.5px; font-weight: 700; color: #17356E; margin-top: 3px; line-height: 1.3; }
+  .spot-badge { display: inline-block; margin-top: 7px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+  .spot-badge.open { background: #2B6BE0; color: #FFF; }
+  .spot-badge.soon { background: #DCE9FB; color: #1D57B8; }
+  .spot-meta { font-size: 11px; color: #6E86AD; margin-top: 7px; }
+
   /* 위치 정렬 토글 */
   .location-row {
     padding: 14px 20px 0;
@@ -551,6 +585,10 @@
     </div>
   </section>
 
+  <section class="festival-section" id="festivalSection"></section>
+
+  <section class="waterspot-section" id="waterSpotSection"></section>
+
   <div class="tabs-wrap">
     <div class="tabs" id="tabs"></div>
   </div>
@@ -800,7 +838,7 @@ function renderTabs() {
 
 // PC에서 마우스 휠/드래그를 가로 스크롤로 변환 (모바일은 터치 스와이프로 동작)
 function enableHorizontalScroll() {
-  document.querySelectorAll(".tabs, .chips, .region-tabs, .baby-chips, .hourly").forEach(el => {
+  document.querySelectorAll(".tabs, .chips, .region-tabs, .baby-chips, .hourly, .spot-scroll").forEach(el => {
     if (el.dataset.wheelBound) return;
     el.dataset.wheelBound = "1";
 
@@ -882,8 +920,114 @@ function getCurrentView() {
   return VIEWS.find(v => v.name === state.view);
 }
 
+function parseFestDate(s) {
+  if (!s) return null;
+  const m = String(s).slice(0, 10).match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (!m) return null;
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+// 여름 축제 캘린더 (물놀이유형=축제) — 날짜순 아젠다, 종료된 건 자동 숨김
+function renderFestivalCalendar() {
+  const el = document.getElementById("festivalSection");
+  if (!el) return;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const MS = 86400000;
+  const dow = ["일", "월", "화", "수", "목", "금", "토"];
+
+  const fests = (PLACES || [])
+    .filter(p => (p["물놀이유형"] || "") === "축제")
+    .filter(p => !p["상태"] || p["상태"] === "게시중")
+    .map(p => ({ p, s: parseFestDate(p["운영시작일"]), e: parseFestDate(p["운영종료일"]) }))
+    .map(f => ({ p: f.p, s: f.s, e: f.e || f.s }))
+    .filter(f => f.s && f.e >= today)
+    .sort((a, b) => a.s - b.s);
+
+  if (fests.length === 0) { el.innerHTML = ""; return; }
+
+  const chip = f => {
+    const range = f.s.getTime() === f.e.getTime() ? "" : `<small>–${f.e.getMonth() + 1}/${f.e.getDate()}</small>`;
+    return `<div class="fest-date"><div class="d">${f.s.getMonth() + 1}/${f.s.getDate()}${range}</div><div class="m">${dow[f.s.getDay()]}</div></div>`;
+  };
+  const badge = f => {
+    if (f.s <= today && today <= f.e) {
+      return Math.round((f.e - today) / MS) <= 1
+        ? `<span class="fest-badge soon">오늘까지</span>`
+        : `<span class="fest-badge ing">진행중</span>`;
+    }
+    const dleft = Math.round((f.s - today) / MS);
+    return `<span class="fest-badge ${dleft <= 3 ? "soon" : "upcoming"}">D-${dleft}</span>`;
+  };
+  const row = f => {
+    const p = f.p;
+    const fee = p["가격대"] === "FREE" ? "무료" : (p["가격대"] ? "유료" : "");
+    const meta = [p["주소"] ? "📍 " + p["주소"] : "", fee].filter(Boolean).join(" · ");
+    const inner = `${chip(f)}<div class="fest-info"><div class="fest-name">${p["이름"]}</div><div class="fest-meta">${meta}</div></div>${badge(f)}`;
+    const link = p["IG/Homepage"];
+    return link
+      ? `<a class="fest-row" href="${link}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="fest-row">${inner}</div>`;
+  };
+
+  const ongoing = fests.filter(f => f.s <= today && today <= f.e);
+  const upcoming = fests.filter(f => f.s > today);
+  let html = `<div class="festival-head"><h2>🏖️ 여름 축제</h2><span class="fest-count">${fests.length}개</span></div>`;
+  if (ongoing.length) html += `<div class="fest-group-label">지금 진행중</div>` + ongoing.map(row).join("");
+  let lastMonth = null;
+  upcoming.forEach(f => {
+    const mth = f.s.getMonth() + 1;
+    if (mth !== lastMonth) { html += `<div class="fest-group-label">${mth}월</div>`; lastMonth = mth; }
+    html += row(f);
+  });
+  el.innerHTML = html;
+}
+
+// 여름 물놀이 스팟 (해수욕장·워터파크·물놀이장 등) — 가로 카드, 폐장 지난 건 숨김
+function renderWaterSpots() {
+  const el = document.getElementById("waterSpotSection");
+  if (!el) return;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const isSpot = p => (p["물놀이유형"] || "") !== "축제" &&
+    (/여름물놀이/.test(p["시즌이벤트"] || "") || (p["물놀이유형"] || "") !== "");
+
+  const spots = (PLACES || [])
+    .filter(p => !p["상태"] || p["상태"] === "게시중")
+    .filter(isSpot)
+    .map(p => ({ p, s: parseFestDate(p["운영시작일"]), e: parseFestDate(p["운영종료일"]) }))
+    .filter(x => !x.e || x.e >= today);
+
+  if (spots.length === 0) { el.innerHTML = ""; return; }
+
+  const isOpen = x => x.s && x.s <= today && (!x.e || today <= x.e);
+  spots.sort((a, b) => (isOpen(a) ? 0 : 1) - (isOpen(b) ? 0 : 1) || (a.p["이름"] || "").localeCompare(b.p["이름"] || ""));
+
+  const badge = x => {
+    if (isOpen(x)) return `<span class="spot-badge open">개장중</span>`;
+    if (x.s && x.s > today) return `<span class="spot-badge soon">${x.s.getMonth() + 1}/${x.s.getDate()} 개장</span>`;
+    return "";
+  };
+  const card = x => {
+    const p = x.p;
+    const type = p["물놀이유형"] || p["카테고리"] || "";
+    const fee = p["가격대"] === "FREE" ? "무료" : (p["가격대"] || "");
+    const region = (p["주소"] || "").replace(/^제주특별자치도\s*/, "").split(" ").slice(0, 2).join(" ");
+    const inner = `<div class="spot-type">${type}</div><div class="spot-name">${p["이름"]}</div>${badge(x)}<div class="spot-meta">${[region, fee].filter(Boolean).join(" · ")}</div>`;
+    const kakao = p["카카오맵URL"];
+    return kakao
+      ? `<a class="spot-card" href="${kakao}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="spot-card">${inner}</div>`;
+  };
+
+  el.innerHTML = `<div class="waterspot-head"><h2>🌊 물놀이 스팟</h2><span class="fest-count">${spots.length}곳</span></div><div class="spot-scroll">${spots.map(card).join("")}</div>`;
+}
+
 function matchPlace(p) {
   if (p["상태"] && p["상태"] !== "게시중") return false;
+  // 축제는 캘린더, 물놀이 스팟(호텔풀·용천수·포구 등)은 물놀이 섹션 전용 — 해수욕장만 일반 탭에도 노출
+  const wtype = p["물놀이유형"] || "";
+  if (wtype && wtype !== "해수욕장") return false;
   const view = getCurrentView();
   if (!view.match(p)) return false;
   if (state.age) {
@@ -952,6 +1096,8 @@ function renderList() {
 }
 
 function renderAll() {
+  renderFestivalCalendar();
+  renderWaterSpots();
   renderTabs();
   document.getElementById("viewDesc").textContent = getCurrentView().desc;
   buildSubFilters();

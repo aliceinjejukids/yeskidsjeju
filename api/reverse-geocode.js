@@ -26,16 +26,34 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Unauthorized — secret 파라미터가 일치하지 않아요" });
   }
 
-  // 입력 좌표 모으기 (POST 배치 우선, 없으면 GET 단건)
+  // 입력 모으기 (POST 배치: points=역지오코딩 / keywords=정지오코딩, GET 단건)
   let points = [];
+  let keywords = null;
   if (req.method === "POST") {
     const body = typeof req.body === "string" ? safeParse(req.body) : req.body;
     points = (body && Array.isArray(body.points)) ? body.points : [];
+    keywords = (body && Array.isArray(body.keywords)) ? body.keywords : null;
   } else if (req.query.lat && req.query.lng) {
     points = [{ id: 0, lat: parseFloat(req.query.lat), lng: parseFloat(req.query.lng) }];
+  } else if (req.query.q) {
+    keywords = [req.query.q];
   }
+
+  // 장소명(키워드) → 좌표·주소·지도링크 (정방향 지오코딩, 제주 지역 한정)
+  if (keywords) {
+    if (keywords.length === 0 || keywords.length > 60) {
+      return res.status(400).json({ error: "keywords는 1~60개까지" });
+    }
+    try {
+      const results = await Promise.all(keywords.map(q => kakaoKeyword(q, KAKAO)));
+      return res.status(200).json({ ok: true, count: results.length, results });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
   if (points.length === 0) {
-    return res.status(400).json({ error: "points가 비어있어요. POST body {points:[{id,lat,lng}]} 또는 GET ?lat=&lng=" });
+    return res.status(400).json({ error: "points 또는 keywords가 필요해요." });
   }
   if (points.length > 60) {
     return res.status(400).json({ error: "한 번에 최대 60개까지. 나눠서 호출해주세요." });
@@ -78,6 +96,27 @@ async function nearestPOI(p, key) {
     }
   }
   return { id: p.id, name: "", category: "", group: "", address: "" };
+}
+
+// 장소명 키워드 검색 → 대표 결과 (제주 영역으로 한정)
+async function kakaoKeyword(query, key) {
+  const url = `https://dapi.kakao.com/v2/local/search/keyword.json`
+    + `?query=${encodeURIComponent(query)}&size=5&rect=126.08,33.0,127.0,33.7`;
+  const r = await fetch(url, { headers: { Authorization: `KakaoAK ${key}` } });
+  if (!r.ok) return { query, name: "" };
+  const d = await r.json();
+  const f = (d.documents || [])[0];
+  if (!f) return { query, name: "" };
+  return {
+    query,
+    name: f.place_name,
+    category: f.category_name,
+    address: f.road_address_name || f.address_name,
+    lat: parseFloat(f.y),
+    lng: parseFloat(f.x),
+    place_url: f.place_url,
+    phone: f.phone || ""
+  };
 }
 
 // 카카오 카테고리 검색 (좌표 기준 거리순)

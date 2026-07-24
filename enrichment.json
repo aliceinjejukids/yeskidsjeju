@@ -1,0 +1,634 @@
+{
+"김녕해수욕장": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202407/15/fc931694-3362-4945-b566-be8d926476d7.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju",
+"기타요금": "평상·파라솔 대여 별도"
+},
+"금능해수욕장": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202110/25/120296bb-0959-4579-ad37-c559e95b434c.webp",
+"키즈태그": [
+"물놀이"
+],
+"실내외": "",
+"출처": "visitjeju",
+"기타요금": "평상·파라솔 대여 별도"
+},
+"구두미포구": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202407/25/2c06697d-80b4-4c31-ae8c-4c1e4483bfbc.webp",
+"키즈태그": [
+"산책"
+],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"판포포구": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202407/23/ef05e315-1c5a-4622-9f51-c968e7e055fc.webp",
+"키즈태그": [
+"주차"
+],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"월령포구": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202407/27/8c63ce46-3fc2-4360-97a3-8e0c9fdff834.webp",
+"키즈태그": [
+"주차"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"정모시쉼터": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201807/31/d02b1d49-7910-418e-a79e-6adc89bac4bb.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"월대천": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201807/11/0cbdbfe9-1bcb-4960-a7bc-290e54ff884f.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"청굴물": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202410/17/6c00fd56-5db3-4ab3-b64e-cc1676df2181.webp",
+"키즈태그": [
+"바다"
+],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"샛도리물": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201807/12/7df28597-e184-48e8-9e08-3430c462e411.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"막숙": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201807/31/010297d2-316b-4132-a76f-979ce5ee804e.webp",
+"키즈태그": [
+"주차"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"논짓물": {
+"사진": null,
+"키즈태그": [
+"주차",
+"바다"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"도두 오래물": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201807/31/85bb8164-b50f-47f4-a0e0-613bbdae4f5d.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"WE호텔 제주": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202305/22/b6143dc0-5dc7-43b7-b732-8eaf2c8e8bcf.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"켄싱턴리조트 서귀포": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201907/23/40216361-f0dd-4238-a1a4-93bdf0bb72c5.webp",
+"키즈태그": [
+"유모차접근",
+"유아의자"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"소노캄 제주": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202301/06/7a59a681-3224-4079-8da3-b84ab99600ac.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"바람이풀에 그림그린날": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201804/30/5ee58835-42eb-457e-804b-a522ab9b5725.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"두리둠비 제주중문본점": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202305/19/46a73245-fed3-448e-b5cf-dbd23699206d.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"숙성도 중문점": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201804/30/7420cdb5-6d9c-4647-9174-8bf1f68a18a8.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"삼대국수회관 본점": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/23/8f913564-f2e6-4eef-8b9b-808d30a087eb.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"디뷰": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202305/19/1f872c24-fd71-4c4e-98e8-f9a8b59b45fc.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"제주올레면옥 제주본점": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202410/15/5b4e02fa-c77c-4e86-9ecb-7293017960a5.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"국시트멍 제주고기국수": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201804/30/b68a4ed8-6d59-43b3-a327-53a843a4bae8.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"그랜마스 노형점": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202305/25/6d2441cf-5f4a-4e6c-a48c-fcdb7adf1907.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"블랙이쉬레드": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202212/06/212fdc8f-2456-4da9-ab5d-63453c77e897.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"워터월드 제주": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202408/20/45b016c4-7bbf-4d80-8f94-ff74c833e450.webp",
+"키즈태그": [],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"제주아트서커스": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202112/02/04f62f4a-a370-4517-a0ec-0447b38e8e0a.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"항파두리항몽유적지 전시실": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201804/30/495a66ed-e8ea-4eec-8c1b-4e824858dcd5.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"노형수퍼마켙": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202410/10/83a8e9f0-ae19-41cf-8a2e-916543b2858e.webp",
+"키즈태그": [],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"카페을리": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202305/24/ffe93a21-266c-4eee-b212-55b3794ba1ff.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"드르쿰다 제주 애월점": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202511/19/d9bec3c9-1fa7-437d-a232-5eabff804bb1.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"아랑디카페": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202606/10/3839c92d-e345-4c62-af8b-9b969d6552ea.png",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"월정리갈비밥": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202112/06/b0ca4df9-a39a-4d7b-8b93-e50416e2f074.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"페를로": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202211/14/e0a5043b-fea1-4c80-8951-057baf5c1816.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"대우정": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/12/17398ef7-fb51-44f1-8cc0-3f191cada4d3.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"중문고등어쌈밥": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202306/21/fe4aea27-af07-44b3-9cf6-e9546bdd1704.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"고집돌우럭": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202606/22/6aebad03-fc33-471a-b675-6f8f2cbb2ce4.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"한라산아래첫마을영농조합법인": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202504/13/8e0ab19a-25ec-41f4-986b-8b984c22f4a9.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"선녀와나무꾼 테마공원": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/01/7ffc8d2d-f02c-4cde-8dbd-84e2f562cd96.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "혼합",
+"출처": "visitjeju"
+},
+"서귀포자연휴양림": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202410/16/464b2236-ec1a-4acb-832c-eceb6e2bceb9.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"소심한책방": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201804/30/ea99c7c1-f31e-4c7b-bff7-1170bb7bc4d5.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"안녕협재씨": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202201/03/53af27b0-e1c6-4517-9055-dc82a3cc2e9f.webp",
+"키즈태그": [
+"주차"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"우유부단": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202410/11/8bf603b4-28e7-4873-b5c0-6f0acc88909c.webp",
+"키즈태그": [
+"동물체험"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"제주신화테마파크": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202301/02/5e99a9bf-c105-4da0-a1c9-e69dc3af70a8.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "혼합",
+"출처": "visitjeju"
+},
+"거문오름": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201807/11/626b6745-e686-46a8-950a-ecdfe17d94ba.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"제주교육박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201804/30/e02a114d-6c1c-42ce-8d5f-585839e6b7c8.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"서귀포감귤박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202507/16/6d95066b-029c-4bb0-bef5-dd08208eecf3.webp",
+"키즈태그": [],
+"실내외": "혼합",
+"출처": "visitjeju"
+},
+"제주별빛누리공원": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202606/22/fc60e6b9-c444-41cc-9f14-181432dab00c.jpeg",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"제주현대미술관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/11/41a07c69-34b3-4e55-be0b-c0571f1cc6c8.webp",
+"키즈태그": [],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"본태박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/04/0bbf3619-d244-443c-b314-6c5e8ccfb8ed.webp",
+"키즈태그": [],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"아르떼뮤지엄 제주": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202012/16/e8969aa3-904e-4cdb-b45e-1df7d8cdce6f.webp",
+"키즈태그": [],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"빛의 벙커": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202211/11/0a143a06-e313-497c-bd4e-9acb53cca8a8.webp",
+"키즈태그": [],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"테디베어뮤지엄": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202409/09/dc8af425-5689-4d63-a9ce-e2c79905a42c.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"헬로키티 아일랜드": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/03/7a3e4fa9-f6de-44b5-8bfe-2c340d4396f4.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"제주민속촌": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202407/08/1ba7f11e-8f3d-4d86-a480-765d7f17db1b.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"제주해녀박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/08/5fd5e898-b6c8-4eb2-bf95-d215dcafbae0.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"제주민속자연사박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/15/f11c62ec-70be-4e9f-b704-417239992833.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"한라수목원": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/10/537d83c9-45a6-4baf-9689-e7a6e307f905.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"휴애리 자연생활공원": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202102/17/01caa2c0-b553-41dd-94b6-0df1237b0f22.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"사려니숲길": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202408/16/a1b79a17-078f-4232-be2d-980f5f5e2a6e.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"한라생태숲": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/19/fd089261-a86b-418d-b660-594a967403d4.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"제주레일바이크": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202607/16/f467a75b-b924-4677-95eb-20c9a5500e6d.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"놀놀플레이그라운드카페": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202203/10/a1ede643-aa2f-4701-86eb-deaa796b4b77.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"산방산랜드": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201804/30/4d993a89-3e7f-4cc0-a0fb-0738ac78ab76.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"어린왕자감귤밭": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202306/26/4460a05a-72db-4cda-beb7-9f1d016bdf7c.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"목장카페 밭디": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202306/18/afae9e57-91ce-4c4c-8a82-e5dfab8f7ae5.webp",
+"키즈태그": [],
+"실내외": "혼합",
+"출처": "visitjeju"
+},
+"스누피가든": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202012/16/5975e5f4-541b-4549-9048-d25f017d8caa.webp",
+"키즈태그": [],
+"실내외": "혼합",
+"출처": "visitjeju"
+},
+"산양큰엉곶": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202112/23/cd798fdd-a72c-4f17-94d8-939a70c7ea82.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"세계자동차&피아노박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202207/06/4ec316ab-dda3-4832-9c72-44cd56a5e64d.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"한림공원": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202302/27/119f141e-9fab-49a8-855c-9f7e1fe2cc1d.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"호텔샌드": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202410/18/b2612bba-b2cf-4425-9051-9de1aca28119.webp",
+"키즈태그": [
+"유모차접근",
+"주차",
+"유아의자",
+"바다"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"카멜리아힐": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202410/15/ec11cb19-cd96-4036-b302-9730035bf052.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"뽀로로&타요 테마파크": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202002/06/75da3644-4efe-4f19-8a3b-2dd0c9205eb3.webp",
+"키즈태그": [],
+"실내외": "혼합",
+"출처": "visitjeju"
+},
+"제주안전체험관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202504/28/736fc04a-5b97-45ad-b422-a53492833b45.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"아침미소목장": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/01/18ea400f-5bd5-4efe-b250-6fd337721ec2.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"화조원": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202607/16/1e9ba267-a01b-476b-8010-5a71c33eefb3.jpg",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"PLANT827": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202606/10/3ba2d91b-93d8-4e97-a88c-0e58332d058e.jpg",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"국립제주박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/201806/28/e8cf4ca1-7983-437c-a820-b95d00ea03b6.webp",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"스마일러펫": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202212/15/058c6863-0a00-43db-b7f2-390b578e6a45.webp",
+"키즈태그": [
+"주차"
+],
+"실내외": "",
+"출처": "visitjeju"
+},
+"미스틱3도": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202112/30/154ff21c-3d8b-404f-b679-62efd7b6523f.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"보롬왓": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202110/29/f3b7c9d2-6a3b-407b-9025-18ef2fed1fee.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"아르떼키즈파크": {
+"사진": "https://api.cdn.visitjeju.net/thumbnail/photomng/imgpath/202405/09/6e5ad58b-6f74-4934-af1f-a1eef3905cf1.jpg",
+"키즈태그": [
+"유모차접근"
+],
+"실내외": "실내",
+"출처": "visitjeju"
+},
+"렛츠런파크 제주": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202111/19/fa7f06d7-ccd2-432b-a3d7-aa11a604f149.webp",
+"키즈태그": [],
+"실내외": "실외",
+"출처": "visitjeju"
+},
+"하이파이브": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202511/18/c34a135b-2a07-4050-96eb-2e31510fd6d5.webp",
+"키즈태그": [],
+"실내외": "",
+"출처": "visitjeju"
+},
+"항공우주박물관": {
+"사진": "https://api.cdn.visitjeju.net/photomng/thumbnailpath/202008/28/08fc30ee-ef29-4f15-a6e4-ea22eff8c273.webp",
+"키즈태그": [],
+"실내외": "혼합",
+"출처": "visitjeju"
+},
+"협재해수욕장": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"함덕해수욕장": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"이호테우해수욕장": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"월정리해변": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"표선해수욕장": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"중문색달해수욕장": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"곽지해수욕장": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"삼양검은모래해변": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+},
+"신양섭지해수욕장": {
+"사진": "",
+"키즈태그": [],
+"실내외": "",
+"기타요금": "평상·파라솔 대여 별도",
+"출처": "manual"
+}
+}

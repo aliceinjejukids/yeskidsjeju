@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -336,6 +337,8 @@
   .spot-price { font-size: 11.5px; font-weight: 700; color: #1D57B8; margin-top: 6px; line-height: 1.3; }
   .spot-note { font-size: 10.5px; color: #6E86AD; margin-top: 4px; line-height: 1.3; }
   .spot-badge.night { background: #17356E; color: #FFF; }
+  .card-photo { width: 100%; height: 152px; object-fit: cover; border-radius: 10px; display: block; margin-bottom: 12px; background: #F0E7DB; }
+  .spot-photo { width: 100%; height: 80px; object-fit: cover; border-radius: 8px; display: block; margin-bottom: 8px; background: #E9F2FD; }
   .mini-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 10px 0 2px; padding-bottom: 2px; }
   .mini-tabs::-webkit-scrollbar { display: none; }
   .mini-tab { flex: 0 0 auto; font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 20px; border: 1px solid #CFE0F2; background: #FFF; color: #2B6BE0; cursor: pointer; white-space: nowrap; }
@@ -815,9 +818,28 @@ const VIEWS = [
 
 async function load() {
   try {
-    const res = await fetch("/api/places");
+    const [res, enrichRes] = await Promise.all([
+      fetch("/api/places"),
+      fetch("/enrichment.json").catch(() => null)
+    ]);
     if (!res.ok) throw new Error("데이터 로드 실패 (" + res.status + ")");
     PLACES = await res.json();
+    // 자동 보강 데이터(비짓제주 사진·태그) 오버레이 — 노션은 건드리지 않음
+    if (enrichRes && enrichRes.ok) {
+      const enrich = await enrichRes.json();
+      PLACES.forEach(p => {
+        const e = enrich[(p["이름"] || "").trim()];
+        if (!e) return;
+        if (e["사진"] && !p["사진"]) p["사진"] = e["사진"];
+        if (e["실내외"] && !p["실내외"]) p["실내외"] = e["실내외"];
+        if (e["기타요금"] && !p["기타요금"]) p["기타요금"] = e["기타요금"];
+        if (e["키즈태그"] && e["키즈태그"].length) {
+          const cur = (p["키즈태그"] || "").split(",").map(s => s.trim()).filter(Boolean);
+          e["키즈태그"].forEach(t => { if (!cur.includes(t)) cur.push(t); });
+          p["키즈태그"] = cur.join(", ");
+        }
+      });
+    }
   } catch (e) {
     console.error(e);
     document.getElementById("list").innerHTML =
@@ -1042,7 +1064,8 @@ function renderWaterSpots() {
     const region = (p["주소"] || "").replace(/^제주특별자치도\s*/, "").split(" ").slice(0, 2).join(" ");
     const extra = (p["기타요금"] || "").trim();
     const note = extra ? `<div class="spot-note">${extra}</div>` : "";
-    const inner = `<div class="spot-name">${p["이름"]}</div>${badge(x)}<div class="spot-meta">${region}</div><div class="spot-price">입장 ${priceOf(p)}</div>${note}`;
+    const photo = p["사진"] ? `<img class="spot-photo" src="${p["사진"]}" loading="lazy" alt="" onerror="this.remove()">` : "";
+    const inner = `${photo}<div class="spot-name">${p["이름"]}</div>${badge(x)}<div class="spot-meta">${region}</div><div class="spot-price">입장 ${priceOf(p)}</div>${note}`;
     const kakao = p["카카오맵URL"];
     return kakao
       ? `<a class="spot-card" href="${kakao}" target="_blank" rel="noopener">${inner}</a>`
@@ -1109,6 +1132,7 @@ function renderList() {
 
     return `
       <div class="card">
+        ${p["사진"] ? `<img class="card-photo" src="${p["사진"]}" loading="lazy" alt="" onerror="this.remove()">` : ""}
         <div class="card-head">
           <div>
             <div class="card-name">${p["이름"]}${distBadge}</div>

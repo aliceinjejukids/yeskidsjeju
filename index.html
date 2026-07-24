@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -310,7 +309,7 @@
   .fest-row { display: flex; gap: 12px; padding: 11px 2px; border-top: 1px solid #D2E3F7; align-items: center; color: #1E3A6E; text-decoration: none; }
   a.fest-row:active { background: #DCE9FB; }
   .fest-date { flex: 0 0 50px; text-align: center; }
-  .fest-date .d { font-size: 18px; font-weight: 800; line-height: 1.05; color: #17356E; }
+  .fest-date .d { font-size: 15px; font-weight: 800; line-height: 1.15; color: #17356E; }
   .fest-date .d small { font-size: 11px; font-weight: 600; }
   .fest-date .m { font-size: 10.5px; color: #6E86AD; margin-top: 1px; }
   .fest-info { flex: 1; min-width: 0; }
@@ -334,6 +333,13 @@
   .spot-badge.open { background: #2B6BE0; color: #FFF; }
   .spot-badge.soon { background: #DCE9FB; color: #1D57B8; }
   .spot-meta { font-size: 11px; color: #6E86AD; margin-top: 7px; }
+  .spot-price { font-size: 11.5px; font-weight: 700; color: #1D57B8; margin-top: 6px; line-height: 1.3; }
+  .mini-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 10px 0 2px; padding-bottom: 2px; }
+  .mini-tabs::-webkit-scrollbar { display: none; }
+  .mini-tab { flex: 0 0 auto; font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 20px; border: 1px solid #CFE0F2; background: #FFF; color: #2B6BE0; cursor: pointer; white-space: nowrap; }
+  .mini-tab.active { background: #2B6BE0; color: #FFF; border-color: #2B6BE0; }
+  .mini-cnt { font-size: 10px; opacity: 0.7; margin-left: 4px; }
+  .spot-desc { font-size: 12px; color: #3A5B8C; margin: 8px 2px 6px; }
 
   /* 위치 정렬 토글 */
   .location-row {
@@ -929,7 +935,9 @@ function parseFestDate(s) {
   return d;
 }
 
-// 여름 축제 캘린더 (물놀이유형=축제) — 날짜순 아젠다, 종료된 건 자동 숨김
+let festTab = null;
+
+// 여름 축제 캘린더 — 진행중/월별 탭, 종료된 건 자동 숨김
 function renderFestivalCalendar() {
   const el = document.getElementById("festivalSection");
   if (!el) return;
@@ -947,18 +955,24 @@ function renderFestivalCalendar() {
 
   if (fests.length === 0) { el.innerHTML = ""; return; }
 
-  const chip = f => {
-    const range = f.s.getTime() === f.e.getTime() ? "" : `<small>–${f.e.getMonth() + 1}/${f.e.getDate()}</small>`;
-    return `<div class="fest-date"><div class="d">${f.s.getMonth() + 1}/${f.s.getDate()}${range}</div><div class="m">${dow[f.s.getDay()]}</div></div>`;
-  };
+  const isOn = f => f.s <= today && today <= f.e;
+  const groups = [];
+  const ongoing = fests.filter(isOn);
+  if (ongoing.length) groups.push({ key: "진행중", items: ongoing });
+  const byMonth = {};
+  fests.filter(f => f.s > today).forEach(f => { const m = f.s.getMonth() + 1; (byMonth[m] = byMonth[m] || []).push(f); });
+  Object.keys(byMonth).map(Number).sort((a, b) => a - b).forEach(m => groups.push({ key: m + "월", items: byMonth[m] }));
+
+  if (!groups.some(g => g.key === festTab)) festTab = groups[0].key;
+  const active = groups.find(g => g.key === festTab) || groups[0];
+
+  const chip = f => isOn(f)
+    ? `<div class="fest-date"><div class="d">~${f.e.getMonth() + 1}/${f.e.getDate()}</div><div class="m">까지</div></div>`
+    : `<div class="fest-date"><div class="d">${f.s.getMonth() + 1}/${f.s.getDate()}</div><div class="m">${dow[f.s.getDay()]}</div></div>`;
   const badge = f => {
-    if (f.s <= today && today <= f.e) {
-      return Math.round((f.e - today) / MS) <= 1
-        ? `<span class="fest-badge soon">오늘까지</span>`
-        : `<span class="fest-badge ing">진행중</span>`;
-    }
-    const dleft = Math.round((f.s - today) / MS);
-    return `<span class="fest-badge ${dleft <= 3 ? "soon" : "upcoming"}">D-${dleft}</span>`;
+    if (isOn(f)) return Math.round((f.e - today) / MS) <= 1 ? `<span class="fest-badge soon">오늘까지</span>` : `<span class="fest-badge ing">진행중</span>`;
+    const d = Math.round((f.s - today) / MS);
+    return `<span class="fest-badge ${d <= 3 ? "soon" : "upcoming"}">D-${d}</span>`;
   };
   const row = f => {
     const p = f.p;
@@ -971,56 +985,70 @@ function renderFestivalCalendar() {
       : `<div class="fest-row">${inner}</div>`;
   };
 
-  const ongoing = fests.filter(f => f.s <= today && today <= f.e);
-  const upcoming = fests.filter(f => f.s > today);
-  let html = `<div class="festival-head"><h2>🏖️ 여름 축제</h2><span class="fest-count">${fests.length}개</span></div>`;
-  if (ongoing.length) html += `<div class="fest-group-label">지금 진행중</div>` + ongoing.map(row).join("");
-  let lastMonth = null;
-  upcoming.forEach(f => {
-    const mth = f.s.getMonth() + 1;
-    if (mth !== lastMonth) { html += `<div class="fest-group-label">${mth}월</div>`; lastMonth = mth; }
-    html += row(f);
-  });
-  el.innerHTML = html;
+  const tabs = groups.map(g => `<button class="mini-tab ${g.key === festTab ? "active" : ""}" data-fest="${g.key}">${g.key}<span class="mini-cnt">${g.items.length}</span></button>`).join("");
+  el.innerHTML = `<div class="festival-head"><h2>🏖️ 여름 축제</h2><span class="fest-count">${fests.length}개</span></div>`
+    + `<div class="mini-tabs">${tabs}</div>`
+    + active.items.map(row).join("");
+  el.querySelectorAll(".mini-tab").forEach(t => t.onclick = () => { festTab = t.dataset.fest; renderFestivalCalendar(); });
 }
 
-// 여름 물놀이 스팟 (해수욕장·워터파크·물놀이장 등) — 가로 카드, 폐장 지난 건 숨김
+let spotCat = null;
+const SPOT_DESC = {
+  "해수욕장": "모래사장 아래 시원한 바다 물놀이",
+  "호텔수영장": "비투숙객도 이용 가능한 호텔·리조트 수영장",
+  "용천수": "여름에도 차가운 제주 천연 용천수",
+  "포구": "마을 포구에서 즐기는 물놀이 · 물때·안전 주의",
+  "물놀이장": "아이들을 위한 관리형 물놀이장",
+  "해수풀장": "바닷물을 가둔 안전한 해수 풀장",
+  "담수풀장": "민물로 즐기는 시원한 담수 풀장",
+  "노천탕": "용천수를 가둔 노천 물놀이터"
+};
+const SPOT_ORDER = ["해수욕장", "호텔수영장", "용천수", "포구", "물놀이장", "해수풀장", "담수풀장", "노천탕"];
+
+// 여름 물놀이 스팟 — 카테고리별 탭, 폐장 지난 건 자동 숨김
 function renderWaterSpots() {
   const el = document.getElementById("waterSpotSection");
   if (!el) return;
   const today = new Date(); today.setHours(0, 0, 0, 0);
-  const isSpot = p => (p["물놀이유형"] || "") !== "축제" &&
-    (/여름물놀이/.test(p["시즌이벤트"] || "") || (p["물놀이유형"] || "") !== "");
 
   const spots = (PLACES || [])
     .filter(p => !p["상태"] || p["상태"] === "게시중")
-    .filter(isSpot)
+    .filter(p => { const t = p["물놀이유형"] || ""; return t && t !== "축제"; })
     .map(p => ({ p, s: parseFestDate(p["운영시작일"]), e: parseFestDate(p["운영종료일"]) }))
     .filter(x => !x.e || x.e >= today);
-
   if (spots.length === 0) { el.innerHTML = ""; return; }
 
-  const isOpen = x => x.s && x.s <= today && (!x.e || today <= x.e);
-  spots.sort((a, b) => (isOpen(a) ? 0 : 1) - (isOpen(b) ? 0 : 1) || (a.p["이름"] || "").localeCompare(b.p["이름"] || ""));
+  const cats = [...new Set(spots.map(x => x.p["물놀이유형"]))]
+    .sort((a, b) => (SPOT_ORDER.indexOf(a) + 1 || 99) - (SPOT_ORDER.indexOf(b) + 1 || 99));
+  if (!cats.includes(spotCat)) spotCat = cats[0];
 
-  const badge = x => {
-    if (isOpen(x)) return `<span class="spot-badge open">개장중</span>`;
-    if (x.s && x.s > today) return `<span class="spot-badge soon">${x.s.getMonth() + 1}/${x.s.getDate()} 개장</span>`;
-    return "";
+  const isOpen = x => x.s && x.s <= today && (!x.e || today <= x.e);
+  const inCat = spots.filter(x => x.p["물놀이유형"] === spotCat)
+    .sort((a, b) => (isOpen(a) ? 0 : 1) - (isOpen(b) ? 0 : 1) || (a.p["이름"] || "").localeCompare(b.p["이름"] || ""));
+
+  const priceOf = p => {
+    if (p["가격대"] === "FREE" || !p["가격대"]) return "무료";
+    const c = p["한줄카피"] || "";
+    if (p["물놀이유형"] === "호텔수영장" && c) return c.split(",")[0].replace(/^비투숙\s*/, "").trim();
+    return p["가격대"];
   };
   const card = x => {
     const p = x.p;
-    const type = p["물놀이유형"] || p["카테고리"] || "";
-    const fee = p["가격대"] === "FREE" ? "무료" : (p["가격대"] || "");
     const region = (p["주소"] || "").replace(/^제주특별자치도\s*/, "").split(" ").slice(0, 2).join(" ");
-    const inner = `<div class="spot-type">${type}</div><div class="spot-name">${p["이름"]}</div>${badge(x)}<div class="spot-meta">${[region, fee].filter(Boolean).join(" · ")}</div>`;
+    const badge = isOpen(x) ? `<span class="spot-badge open">개장중</span>` : (x.s && x.s > today ? `<span class="spot-badge soon">${x.s.getMonth() + 1}/${x.s.getDate()} 개장</span>` : "");
+    const inner = `<div class="spot-name">${p["이름"]}</div>${badge}<div class="spot-meta">${region}</div><div class="spot-price">${priceOf(p)}</div>`;
     const kakao = p["카카오맵URL"];
     return kakao
       ? `<a class="spot-card" href="${kakao}" target="_blank" rel="noopener">${inner}</a>`
       : `<div class="spot-card">${inner}</div>`;
   };
 
-  el.innerHTML = `<div class="waterspot-head"><h2>🌊 물놀이 스팟</h2><span class="fest-count">${spots.length}곳</span></div><div class="spot-scroll">${spots.map(card).join("")}</div>`;
+  const tabs = cats.map(c => `<button class="mini-tab ${c === spotCat ? "active" : ""}" data-spot="${c}">${c}<span class="mini-cnt">${spots.filter(x => x.p["물놀이유형"] === c).length}</span></button>`).join("");
+  el.innerHTML = `<div class="waterspot-head"><h2>🌊 물놀이 스팟</h2><span class="fest-count">${spots.length}곳</span></div>`
+    + `<div class="mini-tabs">${tabs}</div>`
+    + `<div class="spot-desc">${SPOT_DESC[spotCat] || ""}</div>`
+    + `<div class="spot-scroll">${inCat.map(card).join("")}</div>`;
+  el.querySelectorAll(".mini-tab").forEach(t => t.onclick = () => { spotCat = t.dataset.spot; renderWaterSpots(); });
 }
 
 function matchPlace(p) {

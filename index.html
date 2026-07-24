@@ -334,6 +334,8 @@
   .spot-badge.soon { background: #DCE9FB; color: #1D57B8; }
   .spot-meta { font-size: 11px; color: #6E86AD; margin-top: 7px; }
   .spot-price { font-size: 11.5px; font-weight: 700; color: #1D57B8; margin-top: 6px; line-height: 1.3; }
+  .spot-note { font-size: 10.5px; color: #6E86AD; margin-top: 4px; line-height: 1.3; }
+  .spot-badge.night { background: #17356E; color: #FFF; }
   .mini-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 10px 0 2px; padding-bottom: 2px; }
   .mini-tabs::-webkit-scrollbar { display: none; }
   .mini-tab { flex: 0 0 auto; font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 20px; border: 1px solid #CFE0F2; background: #FFF; color: #2B6BE0; cursor: pointer; white-space: nowrap; }
@@ -844,7 +846,7 @@ function renderTabs() {
 
 // PC에서 마우스 휠/드래그를 가로 스크롤로 변환 (모바일은 터치 스와이프로 동작)
 function enableHorizontalScroll() {
-  document.querySelectorAll(".tabs, .chips, .region-tabs, .baby-chips, .hourly, .spot-scroll").forEach(el => {
+  document.querySelectorAll(".tabs, .chips, .region-tabs, .baby-chips, .hourly, .spot-scroll, .mini-tabs").forEach(el => {
     if (el.dataset.wheelBound) return;
     el.dataset.wheelBound = "1";
 
@@ -1004,8 +1006,9 @@ const SPOT_DESC = {
   "노천탕": "용천수를 가둔 노천 물놀이터"
 };
 const SPOT_ORDER = ["해수욕장", "호텔수영장", "용천수", "포구", "물놀이장", "해수풀장", "담수풀장", "노천탕"];
+const NIGHT_BEACHES = new Set(["이호테우해수욕장", "협재해수욕장", "삼양검은모래해변", "월정리해변"]);
 
-// 여름 물놀이 스팟 — 카테고리별 탭, 폐장 지난 건 자동 숨김
+// 여름 물놀이 스팟 — 카테고리별 탭 (탭 위치 유지), 폐장 지난 건 자동 숨김
 function renderWaterSpots() {
   const el = document.getElementById("waterSpotSection");
   if (!el) return;
@@ -1022,33 +1025,43 @@ function renderWaterSpots() {
     .sort((a, b) => (SPOT_ORDER.indexOf(a) + 1 || 99) - (SPOT_ORDER.indexOf(b) + 1 || 99));
   if (!cats.includes(spotCat)) spotCat = cats[0];
 
-  const isOpen = x => x.s && x.s <= today && (!x.e || today <= x.e);
-  const inCat = spots.filter(x => x.p["물놀이유형"] === spotCat)
-    .sort((a, b) => (isOpen(a) ? 0 : 1) - (isOpen(b) ? 0 : 1) || (a.p["이름"] || "").localeCompare(b.p["이름"] || ""));
-
   const priceOf = p => {
     if (p["가격대"] === "FREE" || !p["가격대"]) return "무료";
     const c = p["한줄카피"] || "";
     if (p["물놀이유형"] === "호텔수영장" && c) return c.split(",")[0].replace(/^비투숙\s*/, "").trim();
     return p["가격대"];
   };
+  const badge = x => {
+    const p = x.p;
+    if (p["물놀이유형"] === "해수욕장") return NIGHT_BEACHES.has(p["이름"]) ? `<span class="spot-badge night">야간개장</span>` : "";
+    if (x.s && x.s > today) return `<span class="spot-badge soon">${x.s.getMonth() + 1}/${x.s.getDate()} 개장</span>`;
+    return "";
+  };
   const card = x => {
     const p = x.p;
     const region = (p["주소"] || "").replace(/^제주특별자치도\s*/, "").split(" ").slice(0, 2).join(" ");
-    const badge = isOpen(x) ? `<span class="spot-badge open">개장중</span>` : (x.s && x.s > today ? `<span class="spot-badge soon">${x.s.getMonth() + 1}/${x.s.getDate()} 개장</span>` : "");
-    const inner = `<div class="spot-name">${p["이름"]}</div>${badge}<div class="spot-meta">${region}</div><div class="spot-price">${priceOf(p)}</div>`;
+    const extra = (p["기타요금"] || "").trim();
+    const note = extra ? `<div class="spot-note">${extra}</div>` : "";
+    const inner = `<div class="spot-name">${p["이름"]}</div>${badge(x)}<div class="spot-meta">${region}</div><div class="spot-price">입장 ${priceOf(p)}</div>${note}`;
     const kakao = p["카카오맵URL"];
     return kakao
       ? `<a class="spot-card" href="${kakao}" target="_blank" rel="noopener">${inner}</a>`
       : `<div class="spot-card">${inner}</div>`;
   };
 
-  const tabs = cats.map(c => `<button class="mini-tab ${c === spotCat ? "active" : ""}" data-spot="${c}">${c}<span class="mini-cnt">${spots.filter(x => x.p["물놀이유형"] === c).length}</span></button>`).join("");
+  const tabsHtml = cats.map(c => `<button class="mini-tab" data-spot="${c}">${c}<span class="mini-cnt">${spots.filter(x => x.p["물놀이유형"] === c).length}</span></button>`).join("");
   el.innerHTML = `<div class="waterspot-head"><h2>🌊 물놀이 스팟</h2><span class="fest-count">${spots.length}곳</span></div>`
-    + `<div class="mini-tabs">${tabs}</div>`
-    + `<div class="spot-desc">${SPOT_DESC[spotCat] || ""}</div>`
-    + `<div class="spot-scroll">${inCat.map(card).join("")}</div>`;
-  el.querySelectorAll(".mini-tab").forEach(t => t.onclick = () => { spotCat = t.dataset.spot; renderWaterSpots(); });
+    + `<div class="mini-tabs">${tabsHtml}</div><div class="spot-content"></div>`;
+  const tabsEl = el.querySelector(".mini-tabs");
+  const contentEl = el.querySelector(".spot-content");
+  const paint = () => {
+    const inCat = spots.filter(x => x.p["물놀이유형"] === spotCat).sort((a, b) => (a.p["이름"] || "").localeCompare(b.p["이름"] || ""));
+    contentEl.innerHTML = `<div class="spot-desc">${SPOT_DESC[spotCat] || ""}</div><div class="spot-scroll">${inCat.map(card).join("")}</div>`;
+    tabsEl.querySelectorAll(".mini-tab").forEach(t => t.classList.toggle("active", t.dataset.spot === spotCat));
+    if (typeof enableHorizontalScroll === "function") enableHorizontalScroll();
+  };
+  tabsEl.querySelectorAll(".mini-tab").forEach(t => t.onclick = () => { spotCat = t.dataset.spot; paint(); });
+  paint();
 }
 
 function matchPlace(p) {

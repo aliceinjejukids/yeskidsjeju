@@ -563,6 +563,67 @@
     color: var(--text-sub);
     margin-top: 10px;
   }
+
+  /* ============ 오늘의 날씨 추천 블록 ============ */
+  .weather-reco {
+    margin: 0 16px 18px;
+    background: linear-gradient(180deg, #FFF3E6 0%, #FFE9D4 100%);
+    border: 1px solid #F5D3AE;
+    border-radius: 16px;
+    padding: 14px 16px 16px;
+  }
+  .reco-copy {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #6B3410;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+  .reco-scroll {
+    display: flex; gap: 10px; overflow-x: auto;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px;
+  }
+  .reco-scroll::-webkit-scrollbar { display: none; }
+  .reco-card {
+    flex: 0 0 150px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px;
+    color: var(--text);
+    text-decoration: none;
+    display: block;
+    transition: border-color 0.15s;
+  }
+  .reco-card:hover { border-color: var(--primary); }
+  .reco-card:active { background: #FFFBF4; }
+  .reco-photo {
+    width: 100%; height: 96px; object-fit: cover;
+    border-radius: 8px; display: block; margin-bottom: 8px;
+    background: var(--primary-soft);
+  }
+  .reco-card-name { font-size: 13.5px; font-weight: 700; color: var(--text); line-height: 1.3; }
+  .reco-card-meta { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-top: 6px; }
+  .reco-io {
+    font-size: 10.5px; font-weight: 700; color: var(--primary);
+    background: var(--primary-soft); padding: 2px 7px; border-radius: 20px;
+  }
+  .reco-dist {
+    font-size: 10.5px; font-weight: 700; color: #8A4A1F;
+    background: var(--primary-soft); padding: 2px 7px; border-radius: 20px;
+  }
+  .reco-card-copy {
+    font-size: 11px; color: var(--text-sub); margin-top: 6px; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .reco-more {
+    width: 100%; margin-top: 12px; padding: 11px 14px;
+    border-radius: 10px; border: none;
+    background: var(--primary); color: #fff;
+    font-size: 13px; font-weight: 700; font-family: inherit;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .reco-more:hover { opacity: 0.9; }
 </style>
 </head>
 <body>
@@ -594,6 +655,9 @@
       <div class="weather-loading">날씨 정보를 불러오는 중…</div>
     </div>
   </section>
+
+  <!-- 오늘의 날씨 추천 (날씨 → 장소 자동 연결) · 내용은 renderWeatherRecommend()가 채움 -->
+  <section class="weather-reco" id="weatherReco" style="display:none;"></section>
 
   <section class="festival-section" id="festivalSection"></section>
 
@@ -789,6 +853,15 @@ const VIEWS = [
     sort: sortByName
   },
   {
+    name: "맑은날", emoji: "🌞",
+    desc: "맑고 좋은 날, 밖에서 뛰어놀기 좋은 야외 위주",
+    match: p => {
+      const w = (p["날씨적합"] || "").split("/").map(s => s.trim());
+      return w.includes("🌞");
+    },
+    sort: sortByName
+  },
+  {
     name: "얼리버드", emoji: "🐟",
     desc: "오전 일찍부터 여는 장소 (영업시작 빠른 순)",
     match: p => {
@@ -914,7 +987,7 @@ function renderTabs() {
 
 // PC에서 마우스 휠/드래그를 가로 스크롤로 변환 (모바일은 터치 스와이프로 동작)
 function enableHorizontalScroll() {
-  document.querySelectorAll(".tabs, .chips, .region-tabs, .baby-chips, .hourly, .spot-scroll, .mini-tabs").forEach(el => {
+  document.querySelectorAll(".tabs, .chips, .region-tabs, .baby-chips, .hourly, .spot-scroll, .mini-tabs, .reco-scroll").forEach(el => {
     if (el.dataset.wheelBound) return;
     el.dataset.wheelBound = "1";
 
@@ -1214,6 +1287,7 @@ function renderAll() {
   buildSubFilters();
   renderLocationButton();
   renderList();
+  renderWeatherRecommend();
   enableHorizontalScroll();
 }
 
@@ -1643,6 +1717,7 @@ function renderWeather(data) {
 
   document.getElementById("weatherBody").innerHTML = html;
   enableHorizontalScroll();
+  renderWeatherRecommend();
 }
 
 function toggleWeatherDetails() {
@@ -1696,6 +1771,174 @@ function autoSelectRegion(userLat, userLng) {
     renderRegionTabs();
     loadWeather(true);
   }
+}
+
+// =================== 오늘의 날씨 추천 블록 ===================
+// 날씨 카드 아래에 "오늘 같은 날 가기 좋은 곳 3~4곳"을 자동으로 띄운다.
+// 날씨(WEATHER_CACHE)와 장소(PLACES)는 각각 따로 로드되므로,
+// renderWeather()·renderAll() 양쪽 끝에서 이 함수를 부른다(늦게 끝나는 쪽이 렌더).
+
+// 오늘 핵심값 추출 — renderWeather()와 동일한 방식(체감/강수형태 포함)
+function weatherToday(data) {
+  if (!data || !data.daily || !data.daily.length) return null;
+  const today = data.daily[0];
+  const hours = data.hourly || [];
+  const nowKey = currentHourKey();
+  const nowH = hours.find(h => h.date + h.time >= nowKey) || hours[0] || {};
+  const tmp = nowH.TMP ? parseFloat(nowH.TMP) : (today.tempMax + today.tempMin) / 2;
+  const reh = nowH.REH ? parseInt(nowH.REH) : null;
+  const wsd = nowH.WSD ? parseFloat(nowH.WSD) : null;
+  const feels = Math.round(feelsLike(tmp, reh, wsd));
+  return {
+    rainProbMax: today.rainProbMax || 0,
+    tempMax: today.tempMax,
+    tempMin: today.tempMin,
+    feels,
+    pty: nowH.PTY,
+    pm10Grade: data.air ? data.air.pm10Grade : null,
+    pm25Grade: data.air ? data.air.pm25Grade : null
+  };
+}
+
+// 위 → 아래로 검사해 처음 걸리는 상태 하나로 확정
+function getWeatherCondition(w) {
+  if (!w) return null;
+  const bad = g => g === "나쁨" || g === "매우나쁨";
+  const isPrecip = w.pty && String(w.pty) !== "0";   // PTY 1~7 = 비/눈/소나기
+  if (w.rainProbMax >= 60 || isPrecip) return "rain";
+  if (bad(w.pm10Grade) || bad(w.pm25Grade)) return "dust";
+  if (w.feels >= 31 || w.tempMax >= 31) return "hot";
+  return "good";
+}
+
+// 상태별 카피 (실제 수치를 문장에 삽입)
+const RECO_COPY = {
+  rain: () => "오늘 제주는 비 소식이에요 ☔️ 우비 없이도 신나게 놀 수 있는 실내, 이런 곳 어때요?",
+  hot:  w => `오늘 제주 체감 ${w.feels}°, 많이 더워요 🔥 시원하게 놀기 좋은 곳 골라봤어요`,
+  dust: () => "오늘은 미세먼지가 있어요 😷 실내에서 안심하고 놀기 좋은 곳이에요",
+  good: () => "오늘 제주 날씨 맑아요 ☀️ 밖에서 뛰어놀기 딱 좋은 날! 이런 곳 어때요?"
+};
+
+function recoWeatherTags(p) {
+  return (p["날씨적합"] || "").split("/").map(s => s.trim()).filter(Boolean);
+}
+// 일반 리스트와 같은 기준: 비게시 제외 + 물놀이 전용 스팟(해수욕장 제외) 제외
+function recoBaseOK(p) {
+  if (p["상태"] && p["상태"] !== "게시중") return false;
+  const wtype = p["물놀이유형"] || "";
+  if (wtype && wtype !== "해수욕장") return false;
+  return true;
+}
+
+// 날짜 기반 셔플 — 같은 사람이 다음 날 와도 3곳이 조금씩 바뀌도록(하루 안에선 고정)
+function recoDailySeed() {
+  const d = new Date();
+  return d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate();
+}
+function recoSeededShuffle(arr, seed) {
+  const a = arr.slice();
+  let s = (seed >>> 0) || 1;
+  const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function pickRecommendedPlaces(condition) {
+  const isGood = condition === "good";
+  const order = isGood ? ["실외", "혼합"] : ["실내", "혼합"];
+  const rank = p => {
+    const i = order.indexOf((p["실내외"] || "").trim());
+    return i === -1 ? order.length : i;
+  };
+  const matchW = isGood
+    ? p => recoWeatherTags(p).includes("🌞")
+    : p => { const w = recoWeatherTags(p); return w.includes("☔️") || w.includes("🔥") || w.includes("😷"); };
+
+  const base = (PLACES || []).filter(recoBaseOK);
+  // 위치 있으면 거리순, 없으면 날짜 셔플 → 안정정렬(sort는 동순위 순서 유지)로 실내외 우선순위 적용
+  const arrange = arr => {
+    const seq = state.userLocation
+      ? arr.slice().sort((a, b) => (getDistance(a) ?? Infinity) - (getDistance(b) ?? Infinity))
+      : recoSeededShuffle(arr, recoDailySeed());
+    return seq.sort((a, b) => rank(a) - rank(b));
+  };
+
+  let picks = arrange(base.filter(matchW));
+  if (picks.length < 3) {                       // 3곳 미만이면 '날씨무관'으로 보충
+    const fillers = arrange(base.filter(p => recoWeatherTags(p).includes("날씨무관") && picks.indexOf(p) === -1));
+    picks = picks.concat(fillers);
+  }
+  return picks.slice(0, 4);                      // 최대 4곳
+}
+
+// 테스트용: URL에 ?reco=rain|dust|hot|good 을 붙이면 그 상태를 강제로 띄움(평소엔 실제 날씨)
+function recoForcedCondition() {
+  const m = (location.search || "").match(/[?&]reco=(rain|dust|hot|good)/);
+  return m ? m[1] : null;
+}
+
+// Vercel Web Analytics 커스텀 이벤트
+function trackReco(name, condition, label) {
+  try { if (window.va) window.va("event", { name: name, condition: condition, place: label }); } catch (e) {}
+}
+
+// 더보기 → 기존 탭 필터를 켜고 리스트로 스크롤 (기존 jumpToTab 재사용)
+function recoMore(condition, tabName) {
+  trackReco("reco_more_click", condition, tabName);
+  jumpToTab(tabName);
+}
+
+function renderWeatherRecommend() {
+  const el = document.getElementById("weatherReco");
+  if (!el) return;
+  const hide = () => { el.style.display = "none"; el.innerHTML = ""; };
+
+  if (!PLACES.length || !WEATHER_CACHE) return hide();     // 데이터 아직 없음 → 조용히 숨김
+  if (new Date().getHours() >= 20) return hide();          // 20시 이후 → 숨김
+
+  const w = weatherToday(WEATHER_CACHE);
+  if (!w) return hide();
+  const condition = recoForcedCondition() || getWeatherCondition(w);
+  if (!condition) return hide();
+
+  const places = pickRecommendedPlaces(condition);
+  if (!places.length) return hide();
+
+  const copy = (RECO_COPY[condition] || RECO_COPY.good)(w);
+  const tabName = condition === "good" ? "맑은날" : "비오는날";
+
+  const cardHtml = p => {
+    const photo = p["사진"] ? `<img class="reco-photo" src="${p["사진"]}" loading="lazy" alt="" onerror="this.remove()">` : "";
+    const io = (p["실내외"] || "").trim();
+    const ioPill = io ? `<span class="reco-io">${io}</span>` : "";
+    const dist = getDistance(p);
+    const distPill = dist != null ? `<span class="reco-dist">📍 ${formatDistance(dist)}</span>` : "";
+    const copyLine = p["한줄카피"] ? `<div class="reco-card-copy">${p["한줄카피"]}</div>` : "";
+    const kakao = p["카카오맵URL"] || p["네이버지도URL"] || "";
+    const t = kakao ? "a" : "div";
+    const href = kakao ? ` href="${kakao}" target="_blank" rel="noopener"` : "";
+    const nameAttr = (p["이름"] || "").replace(/"/g, "&quot;");
+    return `<${t} class="reco-card" data-name="${nameAttr}"${href}>${photo}` +
+      `<div class="reco-card-name">${p["이름"] || ""}</div>` +
+      `<div class="reco-card-meta">${ioPill}${distPill}</div>${copyLine}</${t}>`;
+  };
+
+  el.style.display = "";
+  el.innerHTML =
+    `<div class="reco-copy">${copy}</div>` +
+    `<div class="reco-scroll">${places.map(cardHtml).join("")}</div>` +
+    `<button class="reco-more" type="button">오늘 같은 날 갈 곳 더보기 →</button>`;
+
+  // 카드 클릭 추적 (링크는 그대로 새 탭으로 열림)
+  el.querySelectorAll(".reco-card").forEach(c =>
+    c.addEventListener("click", () => trackReco("reco_card_click", condition, c.dataset.name || "")));
+  const moreBtn = el.querySelector(".reco-more");
+  if (moreBtn) moreBtn.addEventListener("click", () => recoMore(condition, tabName));
+
+  enableHorizontalScroll();
 }
 
 // =================== 초기화 ===================

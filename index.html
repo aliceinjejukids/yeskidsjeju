@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -724,11 +725,6 @@
   </div>
 
   <div class="sub-filter">
-    <div class="sub-filter-label">아기 나이</div>
-    <div class="chips" id="ageChips"></div>
-  </div>
-
-  <div class="sub-filter">
     <div class="sub-filter-label">필요한 시설</div>
     <div class="chips" id="tagChips"></div>
   </div>
@@ -763,7 +759,7 @@
 <script>
 let PLACES = [];
 
-let state = { view: "비오는날", age: null, tags: [], userLocation: null, sortByDistance: false };
+let state = { view: "비오는날", tags: [], userLocation: null, sortByDistance: false };
 
 // Haversine 공식 (두 좌표 사이 직선거리, km)
 function distanceKm(lat1, lng1, lat2, lng2) {
@@ -824,7 +820,6 @@ function toggleDistanceSort() {
   );
 }
 
-const AGE_GROUPS = ["0-12개월", "13-24개월", "2-3세", "4-6세", "7세+"];
 const TAG_PRIORITY = ["놀이터", "실내놀이", "실외놀이", "수유실", "기저귀교환대", "유아의자", "유아메뉴", "유모차접근", "주차", "동물체험", "산책", "바다"];
 
 // 공통 정렬 함수
@@ -978,7 +973,6 @@ function renderTabs() {
   el.querySelectorAll(".tab").forEach(t => {
     t.onclick = () => {
       state.view = t.dataset.name;
-      state.age = null;
       state.tags = [];
       renderAll();
     };
@@ -1037,19 +1031,6 @@ function enableHorizontalScroll() {
 }
 
 function buildSubFilters() {
-  const ageEl = document.getElementById("ageChips");
-  ageEl.innerHTML = "";
-  AGE_GROUPS.forEach(a => {
-    const c = document.createElement("button");
-    c.className = "chip" + (state.age === a ? " active" : "");
-    c.textContent = a;
-    c.onclick = () => {
-      state.age = state.age === a ? null : a;
-      buildSubFilters(); renderList();
-    };
-    ageEl.appendChild(c);
-  });
-
   const tagEl = document.getElementById("tagChips");
   tagEl.innerHTML = "";
   TAG_PRIORITY.forEach(t => {
@@ -1213,9 +1194,10 @@ function matchPlace(p) {
   if (wtype && wtype !== "해수욕장") return false;
   const view = getCurrentView();
   if (!view.match(p)) return false;
-  if (state.age) {
-    const ages = (p["연령적합"] || "").split(",").map(s => s.trim());
-    if (!ages.includes(state.age)) return false;
+  const age = currentAgeFilter();
+  if (age) {
+    const ages = (p["연령적합"] || "").split(",").map(s => s.trim()).filter(Boolean);
+    if (ages.length && !ages.includes(age)) return false;   // 연령적합 비어있는 곳은 그대로 노출
   }
   if (state.tags.length) {
     const tags = (p["키즈태그"] || "").split(",").map(s => s.trim());
@@ -1307,7 +1289,6 @@ function renderLocationButton() {
 }
 
 function resetSubFilters() {
-  state.age = null;
   state.tags = [];
   buildSubFilters();
   renderList();
@@ -1315,19 +1296,26 @@ function resetSubFilters() {
 
 // =================== 아기 월령 ===================
 const BABY_AGES = [
-  { key: "infant",    label: "영아 0-12개월" },
-  { key: "toddler",   label: "걸음마 13-24개월" },
-  { key: "preschool", label: "유아 2-3세" },
-  { key: "kid",       label: "4-6세" },
-  { key: "school",    label: "7세+" }
+  { key: "all",       label: "모든 연령",       age: null },
+  { key: "infant",    label: "영아 0-12개월",   age: "0-12개월" },
+  { key: "toddler",   label: "걸음마 13-24개월", age: "13-24개월" },
+  { key: "preschool", label: "유아 2-3세",      age: "2-3세" },
+  { key: "kid",       label: "4-6세",          age: "4-6세" },
+  { key: "school",    label: "7세+",           age: "7세+" }
 ];
 
 function getBabyAge() {
   return localStorage.getItem("babyAge") || "toddler";
 }
+// 상단 '우리 아기' 선택 → 아래 장소 목록의 연령 필터로 사용 (연령적합 매칭용 그룹 문자열)
+function currentAgeFilter() {
+  const b = BABY_AGES.find(x => x.key === getBabyAge());
+  return b ? b.age : null;
+}
 function setBabyAge(k) {
   localStorage.setItem("babyAge", k);
   renderBabyChips();
+  renderList();                                 // 나이 선택 즉시 아래 장소 목록 필터
   if (WEATHER_CACHE) renderWeather(WEATHER_CACHE);
 }
 function renderBabyChips() {
@@ -1571,7 +1559,6 @@ function parentTips(weather, babyAge) {
 
 function jumpToTab(viewName) {
   state.view = viewName;
-  state.age = null;
   state.tags = [];
   renderAll();
   document.querySelector(".tabs-wrap")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1778,25 +1765,36 @@ function autoSelectRegion(userLat, userLng) {
 // 날씨(WEATHER_CACHE)와 장소(PLACES)는 각각 따로 로드되므로,
 // renderWeather()·renderAll() 양쪽 끝에서 이 함수를 부른다(늦게 끝나는 쪽이 렌더).
 
-// 오늘 핵심값 추출 — renderWeather()와 동일한 방식(체감/강수형태 포함)
-function weatherToday(data) {
-  if (!data || !data.daily || !data.daily.length) return null;
-  const today = data.daily[0];
-  const hours = data.hourly || [];
-  const nowKey = currentHourKey();
-  const nowH = hours.find(h => h.date + h.time >= nowKey) || hours[0] || {};
-  const tmp = nowH.TMP ? parseFloat(nowH.TMP) : (today.tempMax + today.tempMin) / 2;
-  const reh = nowH.REH ? parseInt(nowH.REH) : null;
-  const wsd = nowH.WSD ? parseFloat(nowH.WSD) : null;
-  const feels = Math.round(feelsLike(tmp, reh, wsd));
+// 하루치 핵심값 추출. idx=0 = 오늘(현재 시각 체감·강수형태 반영), idx>=1 = 내일 이후.
+// 내일은 체감·미세먼지 예보가 없어 feels=null·미세먼지 판정 제외(최고기온·강수확률·강수형태로만 판정).
+function weatherForDay(data, idx) {
+  if (!data || !data.daily || !data.daily[idx]) return null;
+  const d = data.daily[idx];
+  if (idx === 0) {
+    const hours = data.hourly || [];
+    const nowKey = currentHourKey();
+    const nowH = hours.find(h => h.date + h.time >= nowKey) || hours[0] || {};
+    const tmp = nowH.TMP ? parseFloat(nowH.TMP) : (d.tempMax + d.tempMin) / 2;
+    const reh = nowH.REH ? parseInt(nowH.REH) : null;
+    const wsd = nowH.WSD ? parseFloat(nowH.WSD) : null;
+    return {
+      day: "today",
+      rainProbMax: d.rainProbMax || 0,
+      tempMax: d.tempMax, tempMin: d.tempMin,
+      feels: Math.round(feelsLike(tmp, reh, wsd)),
+      pty: nowH.PTY,
+      pm10Grade: data.air ? data.air.pm10Grade : null,
+      pm25Grade: data.air ? data.air.pm25Grade : null
+    };
+  }
   return {
-    rainProbMax: today.rainProbMax || 0,
-    tempMax: today.tempMax,
-    tempMin: today.tempMin,
-    feels,
-    pty: nowH.PTY,
-    pm10Grade: data.air ? data.air.pm10Grade : null,
-    pm25Grade: data.air ? data.air.pm25Grade : null
+    day: "tomorrow",
+    rainProbMax: d.rainProbMax || 0,
+    tempMax: d.tempMax, tempMin: d.tempMin,
+    feels: null,
+    pty: d.ptySnapshot,
+    pm10Grade: null,
+    pm25Grade: null
   };
 }
 
@@ -1811,12 +1809,20 @@ function getWeatherCondition(w) {
   return "good";
 }
 
-// 상태별 카피 (실제 수치를 문장에 삽입)
+// 상태별 카피 (실제 수치를 문장에 삽입). w.day가 'tomorrow'면 밤 시간대 → '내일' 기준 문구.
 const RECO_COPY = {
-  rain: () => "오늘 제주는 비 소식이에요 ☔️ 우비 없이도 신나게 놀 수 있는 실내, 이런 곳 어때요?",
-  hot:  w => `오늘 제주 체감 ${w.feels}°, 많이 더워요 🔥 시원하게 놀기 좋은 곳 골라봤어요`,
-  dust: () => "오늘은 미세먼지가 있어요 😷 실내에서 안심하고 놀기 좋은 곳이에요",
-  good: () => "오늘 제주 날씨 맑아요 ☀️ 밖에서 뛰어놀기 딱 좋은 날! 이런 곳 어때요?"
+  rain: w => w.day === "tomorrow"
+    ? "내일 제주는 비 소식이에요 ☔️ 우비 없이도 신나게 놀 수 있는 실내, 미리 찜해두세요"
+    : "오늘 제주는 비 소식이에요 ☔️ 우비 없이도 신나게 놀 수 있는 실내, 이런 곳 어때요?",
+  hot: w => w.day === "tomorrow"
+    ? `내일 제주는 최고 ${Math.round(w.tempMax)}°까지 올라 더워요 🔥 시원하게 놀기 좋은 곳 골라봤어요`
+    : `오늘 제주 체감 ${w.feels}°, 많이 더워요 🔥 시원하게 놀기 좋은 곳 골라봤어요`,
+  dust: w => w.day === "tomorrow"
+    ? "내일은 미세먼지가 있을 수 있어요 😷 실내에서 안심하고 놀기 좋은 곳이에요"
+    : "오늘은 미세먼지가 있어요 😷 실내에서 안심하고 놀기 좋은 곳이에요",
+  good: w => w.day === "tomorrow"
+    ? "내일 제주 날씨 맑아요 ☀️ 밖에서 뛰어놀기 딱 좋은 날! 이런 곳 미리 찜해두세요"
+    : "오늘 제주 날씨 맑아요 ☀️ 밖에서 뛰어놀기 딱 좋은 날! 이런 곳 어때요?"
 };
 
 function recoWeatherTags(p) {
@@ -1897,9 +1903,10 @@ function renderWeatherRecommend() {
   const hide = () => { el.style.display = "none"; el.innerHTML = ""; };
 
   if (!PLACES.length || !WEATHER_CACHE) return hide();     // 데이터 아직 없음 → 조용히 숨김
-  if (new Date().getHours() >= 20) return hide();          // 20시 이후 → 숨김
 
-  const w = weatherToday(WEATHER_CACHE);
+  // 밤 8시 이후엔 '오늘' 대신 '내일' 예보 기준 (내일 예보가 없으면 오늘로 폴백)
+  const useTomorrow = new Date().getHours() >= 20;
+  const w = weatherForDay(WEATHER_CACHE, useTomorrow ? 1 : 0) || weatherForDay(WEATHER_CACHE, 0);
   if (!w) return hide();
   const condition = recoForcedCondition() || getWeatherCondition(w);
   if (!condition) return hide();
@@ -1926,11 +1933,12 @@ function renderWeatherRecommend() {
       `<div class="reco-card-meta">${ioPill}${distPill}</div>${copyLine}</${t}>`;
   };
 
+  const moreLabel = w.day === "tomorrow" ? "내일 갈 곳 더보기 →" : "오늘 같은 날 갈 곳 더보기 →";
   el.style.display = "";
   el.innerHTML =
     `<div class="reco-copy">${copy}</div>` +
     `<div class="reco-scroll">${places.map(cardHtml).join("")}</div>` +
-    `<button class="reco-more" type="button">오늘 같은 날 갈 곳 더보기 →</button>`;
+    `<button class="reco-more" type="button">${moreLabel}</button>`;
 
   // 카드 클릭 추적 (링크는 그대로 새 탭으로 열림)
   el.querySelectorAll(".reco-card").forEach(c =>
